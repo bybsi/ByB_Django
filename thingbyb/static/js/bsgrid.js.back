@@ -1,0 +1,249 @@
+/*
+Requires jQuery for now.
+@author Brian Stull
+@date   April 5, 2025
+*/
+
+var _BybGridUsage = (reqParam) => { return `
+Hello, it appears you are doing something wrong or inappropriate.
+Today, you are missing a required option: ${reqParam}.
+Try this:
+    BybGrid({
+        containerId:"divId",
+        dataUrl:"/getmydata.php",
+        columns:[
+            {key:1,label:'Column Name'},
+            {key:2,label:'Column2'}
+        ]
+    });
+`};
+var _BybGridSubgridUsage = () => { return `
+Hello, it appears you are doing something wrong or inappropriate.
+Today, you are not using the subgrid properly.
+Try this:
+    BybGrid({
+        parentContainerId:"parentGridContainerId",
+        parentRowId:dataIdOfParentRow,
+        dataUrl:"/getmoredata.php",
+        columns:[
+            {key:1,label:'Column Name'},
+            {key:2,label:'Column2'}
+        ]
+    });
+`};
+var _BybGridAlert = "See console! ( Press F12 or Ctrl + Shift + i )";
+function BybGrid(options) {
+    let _options = {
+        containerId: '',
+        dataUrl: '',
+        columns: null,
+        columnOrder: null,
+        autoColumnWidth: true,
+        buttonColumnWidth: '',
+        subGrid:0,
+        sortKey:null,
+        sortOrder:'desc',
+        mode: 'remote',
+        pager: true,
+        page: 1,
+        rowCount: 15,
+        loadingClass: '_byb_dialog_loading',
+        ...options
+    };
+    let _columnsLength = _options.columns.length;
+    let _container = null;
+    let _dataGrid  = null;
+    let _pager     = null;
+    let _clGHeader      = '_byb_grid_header';
+    let _clGHeaderCell  = '_byb_grid_header_cell';
+    let _clGDataRow     = '_byb_grid_data_row';
+    let _clGPager       = '_byb_grid_pager';
+    let _clGData        = '_byb_grid_data';
+    let _clGDataCell    = '_byb_grid_data_cell';
+    let _clGSearchCell  = '_byb_grid_search_cell';
+    let _clGSearchField = '_byb_grid_search_input';
+    let _sortedColumnId = '';
+    let _id;
+    let _this;
+    return {
+        data: null,
+        init: function() {
+            // Lets make it a lottery, if some one notices the bug, then they
+            // may claim a prize, but only if I believe they didn't read this first. lOl@@...
+            // Odds are 1 in 1 million 1.
+            _id = 'gid' + Date.now().toString() + (Math.floor(Math.random() * 1000001) + 1); // ^^
+            if (_options.parentContainerId) {
+                if (!_options.parentRowId || !$('#'+_options.parentContainerId).length) {
+                    console.log(_BybGridSubgridUsage());
+                    alert(_BybGridAlert);
+                    return;
+                }
+                _options.containerId = 
+                    _options.parentContainerId+'_byb_sg_'+_options.parentRowId;
+            }
+            $('#'+_options.containerId).empty();
+            if (!_options.sortKey)
+                _options.sortKey = _options.columns[0].key;
+            _options.sortOrder = _options.sortOrder.toLowerCase();
+            this.createDom();
+            _this = this;
+        },
+        createDom: function() {
+            let requiredOptions = ['containerId','dataUrl','columns'];
+            for (reqOpt of requiredOptions) {
+                if (!_options[reqOpt]) {
+                    console.log(_BybGridUsage(reqOpt));
+                    alert(_BybGrid_alert);
+                    return;
+                }
+            }
+            _container = $("#"+_options.containerId);
+            if (!_container.length) {
+                console.log("Invalid div id.");
+                return;
+            }
+            _container.addClass("_byb_grid");
+            _dataGrid = $(`<div class="${_clGData}"></div>`);
+            let colWidths = '';
+            if (_options.autoColumnWidth)
+                colWidths = `${_options.buttonColumnWidth} repeat(${_columnsLength - (1^_options.subGrid) + (_options.buttonColumnWidth ? 0 : 1)}, 1fr)`;
+            else
+                for (column of _options.columns)
+                    colWidths += (column.width ?? '115px') + ' ';
+            _dataGrid.css('grid-template-columns', colWidths);
+            _container.append(_dataGrid);
+
+            if (_options.pager) 
+                this.createPager();
+        },
+        createHeader: function() {
+            let searchBar = '';
+
+            for (column of _options.columns) {
+                let arrowClass = '';
+                if (column.key == _options.sortKey)
+                    arrowClass = '_byb_grid_header_'+_options.sortOrder;
+                _dataGrid.append(`<div class="${_options.containerId} ${_clGHeaderCell} ${arrowClass} ${_id}" data-sortkey="${column.key}">${column.label}</div>`);
+                if (_options.searchBar) {
+                    searchBar += `<div class="${_clGSearchCell}">`;
+                    if (typeof column.searchable === 'undefined' || column.searchable) {
+                        let searchVal = _options.searchKey == column.key ? _options.searchVal : '';
+                        searchBar += `<input type="text" class="_byb_grid_search_field" name="${column.key}" value="${searchVal}">`;
+                    }
+                    searchBar += '</div>';
+                }
+            }
+            
+            this.createSubGrid('h');
+            if (_options.searchBar) {
+                _dataGrid.append(searchBar);
+                this.createSubGrid('s');
+            }
+
+            $(`.${_clGHeaderCell}.${_id}`).off().on('click', function() {
+                _options.sortKey = $(this).data('sortkey');
+                _options.sortOrder = _options.sortOrder == 'asc'?'desc':'asc';
+                // TODO efficiency - just remember the old one.
+                $(`#${_options.containerId} .${_id}`)
+                    .removeClass('_byb_grid_header_desc')
+                    .removeClass('_byb_grid_header_asc');
+                $(this).addClass('_byb_grid_header_'+_options.sortOrder);
+                _this.load();
+            });
+
+            $("._byb_grid_search_field").off().on('keypress', function(evt) {
+                if (evt.key === 'Enter') {
+                    _options.searchKey = $(this).attr('name');
+                    _options.searchVal = $(this).val();
+                    console.log(_options.searchKey + ' ' + _options.searchVal);
+                    _this.load();
+                }
+            });
+        },
+        createPager: function() {
+            let pagerId = _options.containerId + '_pager';
+            _pager = $(`<div id="${pagerId}" class="_byb_grid_pager ${_id}"></div>`);
+            _pager.append(`<div class="_byb_grid_pager_icon _byb_grid_icon_first _byb_grid_pager_direction" data-direction="-10"> </div><div class="_byb_grid_pager_icon _byb_grid_icon_left _byb_grid_pager_direction" data-direction="-1"> </div>`);
+
+            let _pager_index = $(`<div class="_byb_grid_pager_index"></div>`);
+            _pager_index.append(`<div class="_byb_grid_pager_index_cell _byb_grid_pager_index_cell_selected" data-pagenum="1">1</div>`);
+            for (let i = 2; i <= 10; i++)
+                _pager_index.append(`<div class="_byb_grid_pager_index_cell" data-pagenum="${i}">${i}</div>`);
+
+            _pager.append(_pager_index);
+            _pager.append(`<div class="_byb_grid_pager_icon _byb_grid_icon_right _byb_grid_pager_direction" data-direction="1"> </div><div class="_byb_grid_pager_icon _byb_grid_icon_last _byb_grid_pager_direction" data-direction="10"> </div>`);
+            //$(document.body).append(this._pager);
+            //_container.append(_pager);
+            _container.prepend(_pager);
+
+            $(`#${pagerId} ._byb_grid_pager_index_cell`).off().on('click', function() {
+                //  TODO efficiency - just remember the old one.
+                $(`#${pagerId} ._byb_grid_pager_index_cell`).removeClass("_byb_grid_pager_index_cell_selected");
+                _options.page = $(this).addClass('_byb_grid_pager_index_cell_selected').data('pagenum');
+                //_options.rowCount = some selector.val();
+                _this.load();
+            });
+            $(`#${pagerId} ._byb_grid_pager_direction`).off().on('click', function(){
+                console.log('here');
+                let direction = _options.page + parseInt($(this).data('direction'));
+                if (direction < 1)
+                    direction = 1;
+                else if (direction > 10)
+                    direction = 10;
+                $(`#${pagerId} [data-pagenum=${direction}]`).click();
+            });
+        },
+        createSubGrid: function(id=0) {
+            if (!_options.subGrid)
+                return;
+            let _subGrid = $(`<div class="_byb_subgrid" id="${_options.containerId}_byb_sg_${id}"></div>`);
+            _subGrid.css('grid-column', 'span ' + (_columnsLength + 1));
+            _dataGrid.append(_subGrid);
+        },
+        fillGrid: function() {
+            //console.log(this.data);
+            $('#'+_options.containerId).removeClass(_options.loadingClass);
+            let n = 0;
+            for (row of this.data) {
+                for (column of _options.columns) {
+                    let v = row[column.key];
+                    if (column.formatter)
+                        v = column.formatter(row);
+                    let align = column.align ?? 'left';
+                    _dataGrid.append(`<div class="${_clGDataCell} ${_clGDataRow}_${n} _byb_${align}">${v}</div>`);
+                }
+                this.createSubGrid(row.id);
+                n ^= 1;
+            }
+        },
+        load: async function() {
+            _dataGrid.empty();
+            this.createHeader();
+            $('#'+_options.containerId)
+                .removeClass(_options.loadingClass)
+                .addClass(_options.loadingClass);
+            try {
+                const response = await fetch(this.queryURL());
+                if (!response.ok) {
+                    throw new Error(`Grid load error: ${response.status}`);
+                }
+                this.data = await response.json();
+                if (!this.data?.length) {
+                    console.log("Server returned no data.");
+                } else if (Object.keys(this.data[0]).length != _columnsLength) {
+                    console.log("columns length must match dataRow.length");
+                    return;
+                }
+                this.fillGrid();
+            } catch (error) {
+                console.log(`Grid fetch error: ${error}`);
+            }
+        },
+        queryURL: function() {
+            let qStart = _options.dataUrl.indexOf('?') == -1 ? '?':'&';
+            return `${_options.dataUrl}${qStart}sortorder=${_options.sortOrder}&sortkey=${_options.sortKey}&searchkey=${_options.searchKey ?? ''}&searchval=${_options.searchVal ?? ''}&page=${_options.page}&limit=${_options.rowCount}`;
+                
+        },
+        onload: function() { return false; },
+    };
+}

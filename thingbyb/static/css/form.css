@@ -1,0 +1,51 @@
+form {
+    margin:0;
+    padding:0;
+    display:inline-block;
+}
+input {
+    width: 180px;
+}
+form input {
+    color: black;
+    border-radius:6px;
+}
+textarea {
+    width:380px;
+    height:150px;
+}
+._byb_dialog_form {
+    display:grid;
+    grid-template-rows: 1fr;
+    font-size: 12px;
+    padding:0;
+    margin:0;
+}
+._byb_dialog_form_cell {
+    padding-bottom:10px;
+    width: 180px;
+}
+#_byb_login_form {
+    display:inline-flex;
+    gap:2px;
+    align-items:baseline;
+}
+._byb_captcha {
+    border:1px solid #adadad;
+    border-radius:5px;
+}
+.field-holder {
+        position:relative;
+	display:flex;
+	align-items:center;
+}
+.absolute-label {
+        position:absolute;
+        right:7px;
+        color:#224000;
+        border-left:1px dotted black;
+        padding-left:4px;
+	padding-bottom:2px;
+	font-size:13px;
+}
+

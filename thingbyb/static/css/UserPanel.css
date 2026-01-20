@@ -1,0 +1,37 @@
+#user_panel {
+	display:flex;
+	position:relative;
+	padding-left:10px;
+	height:100%;
+	width:100%;
+	justify-content:center;
+	align-items:center;
+
+}
+#user_avatar {
+	padding-right:5px;
+}
+.user_panel_icon {
+	display:flex;
+	padding:0 8px 0 10px;
+	cursor:pointer;
+	border-radius: 15px;
+	align-items:center;
+}
+.user_panel_icon:hover {
+	background-color:#233c16;
+	border-radius:20px;
+}
+.user_panel_icon img {
+	width:30px;
+	height:30px;
+}
+.user_display_name {
+	font-weight:bold;
+	color:#488e00;
+	font-size:13px;
+	padding:0px 10px;
+	border-right:2px solid #bbff00ba;
+	border-left:2px solid #bbff00ba;
+	border-radius:10px;
+}

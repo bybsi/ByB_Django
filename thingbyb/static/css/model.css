@@ -1,0 +1,12 @@
+#_byb_model_image_container {
+    display:flex;
+    justify-content:center;
+}
+._byb_model_image {
+    border:outset;
+}
+._byb_model_image img{
+    display:block;
+}
+
+

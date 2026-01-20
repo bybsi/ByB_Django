@@ -1,0 +1,37 @@
+
+.music_play {
+    content:url(/images/icons/play.png);
+    vertical-align:middle;
+    padding-left:5px;
+    text-decoration:none;
+}
+.music_play:hover {
+    content:url(/images/icons/play1.png);
+}
+.music_stop {
+    content:url(/images/icons/stop.png);
+    vertical-align:middle;
+    padding-left:5px;
+    text-decoration:none;
+}
+.music_stop:hover {
+    content:url(/images/icons/stop1.png);
+}
+.music_comment {
+    content:url(/images/icons/comment.png);
+    vertical-align:middle;
+    padding-left:5px;
+    text-decoration:none;
+}
+.music_comment:hover {
+    content:url(/images/icons/comment1.png);
+}
+.music_more {
+    content:url(/images/icons/more.png);
+    vertical-align:middle;
+    padding-left:5px;
+    text-decoration:none;
+}
+.music_more:hover {
+    content:url(/images/icons/more1.png);
+}
