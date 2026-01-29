@@ -11,6 +11,7 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 """
 import os
 from pathlib import Path
+from utils.decrypt import DBCrypt
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -30,8 +31,7 @@ SECRET_KEY = 'django-insecure-fq!z&2wlzv))9$a#m(xefj%@kv+p86b!^33s&k046cy54b)2dw
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = []
-
+ALLOWED_HOSTS = ['*']
 
 # Application definition
 
@@ -42,6 +42,10 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'core.apps.CoreConfig',
+    'users.apps.UsersConfig',
+    'activities.apps.ActivitiesConfig',
+    'posts.apps.PostsConfig',
 ]
 
 MIDDLEWARE = [
@@ -56,6 +60,33 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'thingbyb.urls'
 
+GLOBAL_FILES = {
+    'css_files':[
+        'jquery-ui.sructure.min.css', 
+        'jquery-ui.theme.min.css', 
+        'css/form.css', 
+        'css/fonts.css', 
+        'css/layout.css', 
+        'css/bs.css',
+        'css/channels.css'
+    ],
+    'js_files':[
+        'js/jquery.min.js', 
+        'js/jquery-ui.min.js',
+        'js/bs.js',
+        'js/LoginPanel.js',
+        'js/channels.js'
+    ],
+    'icons':{
+        'trading':'Paper Trading',
+        'running':'ByBGrid Demo (Running)',
+        'music':'ByBGrid Demo (Music)',
+        'code':'Code',
+        'reactjs':'React',
+        'bounders':'Bounders'
+    }
+}
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -66,7 +97,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
-                'thingbyb.context_processors.unix_timestamp'
+                'thingbyb.context_processors.global_vars'
             ],
         },
     },
@@ -77,32 +108,47 @@ WSGI_APPLICATION = 'thingbyb.wsgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/6.0/ref/settings/#databases
-
+secret_db_pw = DBCrypt().decrypt('LZyBY1sWkFGnqwJjS0C/sw==')
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.sqlite3',
-        'NAME': BASE_DIR / 'db.sqlite3',
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': 'thingbyb_django',
+        'USER': 'bs',
+        'PASSWORD': secret_db_pw,
+        'HOST': 'localhost',
+        'PORT': '3306',
+        'OPTIONS': {
+            'init_command': 'SET default_storage_engine=INNODB',
+        }
     }
 }
 
+FIXTURE_DIRS = [
+    os.path.join(BASE_DIR, 'fixtures')
+]
+
+AUTHENTICATION_BACKENDS = [
+    'django.contrib.auth.backends.ModelBackend',
+    'users.backends.UserBackend',
+]
 
 # Password validation
 # https://docs.djangoproject.com/en/6.0/ref/settings/#auth-password-validators
 
-AUTH_PASSWORD_VALIDATORS = [
-    {
-        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
-    },
-    {
-        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
-    },
-]
+#AUTH_PASSWORD_VALIDATORS = [
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.UserAttributeSimilarityValidator',
+#    },
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.MinimumLengthValidator',
+#    },
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.CommonPasswordValidator',
+#    },
+#    {
+#        'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
+#    },
+#]
 
 
 # Internationalization

@@ -1,0 +1,18 @@
+<!--<?php
+        $modal = isset($_GET['modal']) ? "_modal" : "";
+?>-->
+<form id="_byb_login_form"{{modal}}>
+	{% csrf_token %}
+        <div class="field-holder">
+                <label for="login_username{{modal}}" class="absolute-label">Username</label>
+                <input id="login_username{{modal}}" name="login_username" type="text">
+        </div>
+        <div class="field-holder">
+                <label for="login_password{{modal}}" class="absolute-label">Password</label>
+                <input id="login_password{{modal}}" name="login_password" type="password">
+        </div>
+	{% if not modal %}
+        <button id="login_button" class="_byb_button">Login</button>
+	{% endif %}
+</form>
+

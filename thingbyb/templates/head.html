@@ -1,0 +1,8 @@
+{% load static %}
+<head>
+<title>ThingByB - Dev Projects - Django</title>
+{% for js_file in js_files %} <script type="text/javascript" src="{% static js_file %}?v={{ version_str }}"></script>
+{% endfor %}
+{% for css_file in css_files %} <link rel="stylesheet" href="{% static css_file %}?v={{ version_str }}">
+{% endfor %}
+</head>

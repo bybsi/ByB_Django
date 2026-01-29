@@ -374,16 +374,13 @@ class ChatBox
 	writeMessage({name, text, time, type}) {
 		if (time == 'now')
 			time = (new Date()).toISOString().replace("T"," ").substring(0, 19);
-		if (type === "pre")
-			this.outputElem.append(`
+		const display_text = type === "pre" ?
+			`<pre>${htmlEnc(text)}</pre>` :
+			htmlEnc(text);
+		this.outputElem.append(`
 <span class="m_time">[${time}]</span> 
 <span class="m_name">${htmlEnc(name)}</span>: 
-<span class="m_text"><pre>${htmlEnc(text)}</pre></span><br>`);
-		else
-			this.outputElem.append(`
-<span class="m_time">[${time}]</span> 
-<span class="m_name">${htmlEnc(name)}</span>: 
-<span class="m_text">${htmlEnc(text)}</span><br>`);
+<span class="m_text">${display_text}</span><br>`);
 		if (this.shouldScroll)
 			this.outputElem.scrollTop(this.outputElem.prop("scrollHeight"));
 	}

@@ -1,6 +1,5 @@
 /*
-Requires jQuery for now.
-	- jQuery no longer used as of 5/13/2025
+- jQuery no longer used as of 5/13/2025
 @author Brian Stull
 @date   April 18, 2025
 */
@@ -71,21 +70,24 @@ function BybGrid(options) {
 	let _pagerElem      = null;
 	let _pagerIndexElem = null;
 	let _selectedPagerIndexElem = null;
-	let _clGHeader      = '_byb_grid_header';
-	let _clGHeaderCell  = '_byb_grid_header_cell';
-	let _clGDataRow     = '_byb_grid_data_row';
-	let _clGPager       = '_byb_grid_pager';
-	let _clGData        = '_byb_grid_data';
-	let _clGDataCell    = '_byb_grid_data_cell';
-	let _clGDataNone    = '_byb_grid_data_empty';
-	let _clGSearchCell  = '_byb_grid_search_cell';
-	let _clGSearchField = '_byb_grid_search_input';
+	const _clGHeaderCell    = '_byb_grid_header_cell';
+	const _clGDataRow       = '_byb_grid_data_row';
+	const _clGPager         = '_byb_grid_pager';
+	const _clGData          = '_byb_grid_data';
+	const _clGDataCell      = '_byb_grid_data_cell';
+	const _clGDataNone      = '_byb_grid_data_empty';
+	const _clGSearchCell    = '_byb_grid_search_cell';
+	const _clGSearchField   = '_byb_grid_search_field';
+	const _clGSearchOverlay = '_byb_grid_search_overlay';
+	const _clGridPagerDir   = '_byb_grid_pager_direction';
+	const _clGridPagerIcon  = '_byb_grid_pager_icon';
+	const _clGridPagerIdxC  = '_byb_grid_pager_index_cell';
 
-	let _clTData       = '_byb_table_data';
-	let _clTHeaderRow  = '_byb_table_header_row';
-	let _clTHeaderCell = '_byb_table_header_cell';
-	let _clTSearchCell = '_byb_table_search_cell';
-	let _clTDataCell   = '_byb_table_data_cell';
+	const _clTData       = '_byb_table_data';
+	const _clTHeaderRow  = '_byb_table_header_row';
+	const _clTHeaderCell = '_byb_table_header_cell';
+	const _clTSearchCell = '_byb_table_search_cell';
+	const _clTDataCell   = '_byb_table_data_cell';
 
 	let _innerContainerId = '';
 	let _sortedColumnId   = '';
@@ -254,8 +256,6 @@ function BybGrid(options) {
 				if (_options.searchBar) {
 					_dataGrid.insertAdjacentHTML('beforeend', searchBar);
 					this.createSubGrid('s');
-					//this.createSearchBar(searchBar);
-					//this.createSearchBar();
 				}
 			} else {
 				this.createHeaderTableRow();
@@ -270,27 +270,13 @@ function BybGrid(options) {
 		createHeaderGridRow: function() {
 			let searchBar = '';
 			let i = 0;
-			let colResizerT = document.createElement('span');
-			colResizerT.classList.add('_byb_grid_col_resizer');
+			//let colResizerT = document.createElement('span');
+			//colResizerT.classList.add('_byb_grid_col_resizer');
 			for (column of _options.columns) {
 				let sortKey = column.sortable === false ? '-1' : column.key;
 				let headerCol = document.createElement('div');
-				let colResizer = colResizerT.cloneNode(false);
-				colResizer.addEventListener('mousedown', this.colResizeHandler.bind(null, i));
-/*
-				document.addEventListener('mouseup', function() {
-					if (_resizingVertical) {
-						_resizingVertical = false;
-						_resizeMouseY = 0;
-					}
-				});
-				document.addEventListener('mousemove', function(evt) {
-					if (_resizingVertical) {
-						let delta = evt.pageY - _resizeMouseY;
-						_innerContainer.style.height = (_resizeOldHeight + delta) + 'px';
-					}
-				});
-*/
+				//let colResizer = colResizerT.cloneNode(false);
+				//colResizer.addEventListener('mousedown', this.colResizeHandler.bind(null, i));
 				headerCol.id = _innerContainerId + '' + (i++);
 				headerCol.classList.add(_innerContainerId, _clGHeaderCell);
 				if (column.key == _options.sortKey)
@@ -302,24 +288,28 @@ function BybGrid(options) {
 					headerCol.style.zIndex = 2;
 				headerCol.removeEventListener('click', this.headerRowClickHandler);
 				headerCol.addEventListener('click', this.headerRowClickHandler);
-				headerCol.append(colResizer);
+				//headerCol.append(colResizer);
 				_dataGrid.appendChild(headerCol);
-				if (_options.searchBar) {
-					searchBar += `<div class="${_clGSearchCell}">`;
-					if (typeof column.searchable === 'undefined' || column.searchable) {
-						let searchVal = htmlEnc(column.searchType ?? '');
-						if (column.hasOwnProperty('searchOptions')) {
-							searchBar += `<select name="${column.key}" class="_byb_grid_search_field" style="width:${parseInt(column.width) - 20}px">`;
-							for (let [val, lbl] of Object.entries(column.searchOptions)) 
-								searchBar += `<option value="${val}">${lbl}</option>`;
-							searchBar += '</select>';
-						} else {
-							searchBar += `<input type="text" class="_byb_grid_search_field" name="${column.key}" style="width:${parseInt(column.width) - 20}px">`;
-						}
-						searchBar += `<div class="_byb_grid_search_overlay">${searchVal}</div>`;
-					}
+				if (!_options.searchBar)
+					continue;
+
+				searchBar += `<div class="${_clGSearchCell}">`;
+				if (typeof column.searchable !== 'undefined' && !column.searchable) {
 					searchBar += '</div>';
+					continue;
 				}
+						
+				const searchVal = htmlEnc(column.searchType ?? '');
+				if (column.hasOwnProperty('searchOptions')) {
+					searchBar += `<select name="${column.key}" class="${_clGSearchField}" style="width:${parseInt(column.width) - 20}px">`;
+					for (const [val, lbl] of Object.entries(column.searchOptions)) 
+						searchBar += `<option value="${val}">${lbl}</option>`;
+					searchBar += '</select>';
+				} else {
+					searchBar += `<input type="text" class="${_clGSearchField}" name="${column.key}" style="width:${parseInt(column.width) - 20}px">`;
+				}
+				searchBar += `<div class="${_clGSearchOverlay}">${searchVal}</div>`;
+				searchBar += '</div>';
 			}
 			
 			return searchBar;
@@ -334,29 +324,14 @@ function BybGrid(options) {
 			let i = 0;
 			let tHead = document.createElement('thead');
 			let tRow = document.createElement('tr');
-			let colResizerT = document.createElement('span');
-			colResizerT.classList.add('_byb_grid_col_resizer');
+			//let colResizerT = document.createElement('span');
+			//colResizerT.classList.add('_byb_grid_col_resizer');
 			tRow.classList.add(_clTHeaderRow);
 			for (column of _options.columns) {
 				let sortKey = column.sortable === false ? '-1' : column.key;
 				let headerCol = document.createElement('th');
-				let colResizer = colResizerT.cloneNode(false);
-				colResizer.addEventListener('mousedown', this.colResizeHandler.bind(null, i));
-/*
-				document.addEventListener('mouseup', function() {
-					if (_resizingVertical) {
-						_resizingVertical = false;
-						_resizeMouseY = 0;
-					}
-				});
-				document.addEventListener('mousemove', function(evt) {
-					if (_resizingVertical) {
-						let delta = evt.pageY - _resizeMouseY;
-						_innerContainer.style.height = (_resizeOldHeight + delta) + 'px';
-					}
-				});
-*/
-
+				//let colResizer = colResizerT.cloneNode(false);
+				//colResizer.addEventListener('mousedown', this.colResizeHandler.bind(null, i));
 				headerCol.id = _innerContainerId + '' + (i++);
 				headerCol.classList.add(_innerContainerId, _clTHeaderCell);
 				if (column.key == _options.sortKey)
@@ -368,30 +343,35 @@ function BybGrid(options) {
 					headerCol.style.zIndex = 2;
 				headerCol.removeEventListener('click', this.headerRowClickHandler);
 				headerCol.addEventListener('click', this.headerRowClickHandler);
-				headerCol.append(colResizer);
+				//headerCol.append(colResizer);
 				tRow.appendChild(headerCol);
 
-				if (_options.searchBar) {
-					if (searchBar == '')
-						searchBar = `<tr class="${_clTHeaderRow}">`;
-					searchBar += `<th class="${_clTSearchCell}">`;
-					if (typeof column.searchable === 'undefined' || column.searchable) {
-						let searchVal = htmlEnc(column.searchType ?? '');
-						let cWidth = column.width ? 
-							(parseInt(column.width) - 20) + 'px' :
-							'auto';
-						if (column.hasOwnProperty('searchOptions')) {
-							searchBar += `<select name="${column.key}" class="_byb_grid_search_field" style="width:${cWidth}">`;
-							for (let [val, lbl] of Object.entries(column.searchOptions)) 
-								searchBar += `<option value="${val}">${lbl}</option>`;
-							searchBar += '</select>';
-						} else {
-							searchBar += `<input type="text" class="_byb_grid_search_field" name="${column.key}" style="width:${cWidth}">`;
-						}
-						searchBar += `<div class="_byb_grid_search_overlay">${searchVal}</div>`;
-					}
+				if (!_options.searchBar)
+					continue;
+
+				if (searchBar == '')
+					searchBar = `<tr class="${_clTHeaderRow}">`;
+
+				searchBar += `<th class="${_clTSearchCell}">`;
+				if (typeof column.searchable !== 'undefined' && !column.searchable) {
 					searchBar += '</th>';
+					continue;
 				}
+
+				const searchVal = htmlEnc(column.searchType ?? '');
+				const cWidth = column.width ? 
+					(parseInt(column.width) - 20) + 'px' :
+					'auto';
+				if (column.hasOwnProperty('searchOptions')) {
+					searchBar += `<select name="${column.key}" class="${_clGSearchField}" style="width:${cWidth}">`;
+					for (const [val, lbl] of Object.entries(column.searchOptions)) 
+						searchBar += `<option value="${val}">${lbl}</option>`;
+					searchBar += '</select>';
+				} else {
+					searchBar += `<input type="text" class="${_clGSearchField}" name="${column.key}" style="width:${cWidth}">`;
+				}
+				searchBar += `<div class="${_clGSearchOverlay}">${searchVal}</div>`;
+				searchBar += '</th>';
 			}
 
 			tHead.appendChild(tRow);
@@ -403,13 +383,13 @@ function BybGrid(options) {
 		},
 
 		applySearchBarEventListeners: function(searchBar) {
-			let searchOverlays = document.querySelectorAll('._byb_grid_search_overlay');
+			let searchOverlays = document.querySelectorAll(`.${_clGSearchOverlay}`);
 			searchOverlays.forEach((el) => {
 				el.removeEventListener('click', this.searchOverlayClickHandler);
 				el.addEventListener('click', this.searchOverlayClickHandler);
 			});
-			const textInputs = _innerContainer.querySelectorAll('._byb_grid_search_field[type="text"]');
-			const selectInputs = _innerContainer.querySelectorAll('select._byb_grid_search_field');
+			const textInputs = _innerContainer.querySelectorAll(`.${_clGSearchField}[type="text"]`);
+			const selectInputs = _innerContainer.querySelectorAll(`select.${_clGSearchField}`);
 			textInputs.forEach((inp) => {
 				inp.removeEventListener('keypress', this.searchFieldKeyPressHandler);
 				inp.addEventListener('keypress', this.searchFieldKeyPressHandler);
@@ -451,12 +431,12 @@ function BybGrid(options) {
 			// Left and up arrows
 			let arrowClass = _options.pagerOrientation == 'vertical' ? '_v' : '_h';
 			_pagerElem.insertAdjacentHTML('beforeend',
-`<div class="_byb_grid_pager_icon _byb_grid_icon_first${arrowClass} _byb_grid_pager_direction" data-direction="first"> </div><div class="_byb_grid_pager_icon _byb_grid_icon_left${arrowClass} _byb_grid_pager_direction" data-direction="-1"> </div>`);
+`<div class="${_clGridPagerIcon} _byb_grid_icon_first${arrowClass} ${_clGridPagerDir}" data-direction="first"> </div><div class="${_clGridPagerIcon} _byb_grid_icon_left${arrowClass} ${_clGridPagerDir}" data-direction="-1"> </div>`);
 			// Page numbers
 			this.initPagerIndex();
 			// Right and down  arrows
 			_pagerElem.insertAdjacentHTML('beforeend',
-`<div class="_byb_grid_pager_icon _byb_grid_icon_right${arrowClass} _byb_grid_pager_direction" data-direction="1"> </div><div class="_byb_grid_pager_icon _byb_grid_icon_last${arrowClass} _byb_grid_pager_direction" data-direction="last"> </div>`);
+`<div class="${_clGridPagerIcon} _byb_grid_icon_right${arrowClass} ${_clGridPagerDir}" data-direction="1"> </div><div class="${_clGridPagerIcon} _byb_grid_icon_last${arrowClass} ${_clGridPagerDir}" data-direction="last"> </div>`);
 			// Number of rows per page
 			_rowCountInput = document.createElement('input');
 			_rowCountInput.id = _options.pagerId + '_row_count';
@@ -470,12 +450,12 @@ function BybGrid(options) {
 			_pagerElem.append(rowCountElem);
 			_rowCountInput.removeEventListener('keypress', this.rowCountHandler)
 			_rowCountInput.addEventListener('keypress', this.rowCountHandler)
-			let elems = _pagerElem.querySelectorAll('._byb_grid_pager_index_cell');
+			let elems = _pagerElem.querySelectorAll(`.${_clGridPagerIdxC}`);
 			elems.forEach(el => {
 				el.removeEventListener('click', this.indexCellHandler);
 				el.addEventListener('click', this.indexCellHandler);
 			});
-			elems = _pagerElem.querySelectorAll('._byb_grid_pager_direction');
+			elems = _pagerElem.querySelectorAll(`.${_clGridPagerDir}`);
 			elems.forEach(el => {
 				el.removeEventListener('click', this.pagerDirectionHandler);
 				el.addEventListener('click', this.pagerDirectionHandler);
@@ -487,13 +467,13 @@ function BybGrid(options) {
 			_pagerIndexElem.id = _options.pagerId + '_pager_index';
 			_pagerIndexElem.classList.add('_byb_grid_pager_index_'+_options.pagerOrientation);
 			_selectedPagerIndexElem = document.createElement('div');
-			_selectedPagerIndexElem.classList.add('_byb_grid_pager_index_cell', '_byb_grid_pager_index_cell_selected');
+			_selectedPagerIndexElem.classList.add(_clGridPagerIdxC, `${_clGridPagerIdxC}_selected`);
 			_selectedPagerIndexElem.dataset.pagenum = 1;
 			_selectedPagerIndexElem.setAttribute('data-pagenum', 1);
 			_selectedPagerIndexElem.innerHTML = '1';
 			_pagerIndexElem.append(_selectedPagerIndexElem);
 			for (let i = 2; i <= 11; i++)
-				_pagerIndexElem.insertAdjacentHTML('beforeend',`<div class="_byb_grid_pager_index_cell" data-pagenum="${i}">${i}</div>`);
+				_pagerIndexElem.insertAdjacentHTML('beforeend',`<div class="${_clGridPagerIdxC}" data-pagenum="${i}">${i}</div>`);
 			_pagerElem.append(_pagerIndexElem);
 		},
 
@@ -502,15 +482,15 @@ function BybGrid(options) {
 				return;
 			let idx = _options.page >= 11 ? _options.page - 5 : 1;
 			for (el of _pagerIndexElem.children) {
-				el.classList.remove('_byb_grid_pager_index_cell_disabled');
+				el.classList.remove(`${_clGridPagerIdxC}_disabled`);
 				if (idx*_options.rowCount - _this.numRows >= _options.rowCount) {
-					el.classList.add('_byb_grid_pager_index_cell_disabled');
+					el.classList.add(`${_clGridPagerIdxC}_disabled`);
 					el.dataset.pagenum = 'x';
 					el.setAttribute('data-pagenum','x');
 				} 
 
 				if (idx == _options.page) { 
-					el.classList.add('_byb_grid_pager_index_cell_selected');
+					el.classList.add(`${_clGridPagerIdxC}_selected`);
 					_selectedPagerIndexElem = el;
 				}
 				el.innerHTML = idx.toString();
@@ -522,15 +502,12 @@ function BybGrid(options) {
 		},
 
 		pagerAction: function(selectedIndex) {
-			let newSelected = document.querySelector(`._byb_grid_pager_index_cell[data-pagenum="${selectedIndex}"]`);
-			if (!(newSelected && newSelected.classList.contains('_byb_grid_pager_index_cell_disabled'))){
+			let newSelected = document.querySelector(`.${_clGridPagerIdxC}[data-pagenum="${selectedIndex}"]`);
+			if (!(newSelected && newSelected.classList.contains(`${_clGridPagerIdxC}_disabled`))){
 				if (_selectedPagerIndexElem)
-					_selectedPagerIndexElem.classList.remove('_byb_grid_pager_index_cell_selected');
+					_selectedPagerIndexElem.classList.remove(`${_clGridPagerIdxC}_selected`);
 				_options.page = selectedIndex;
 			}
-			//if (_selectedPagerIndexElem)
-			//	_selectedPagerIndexElem.classList.remove('_byb_grid_pager_index_cell_selected');
-			//_options.page = selectedIndex;
 			this.load();
 		},
 
@@ -581,7 +558,7 @@ function BybGrid(options) {
 					let v = row[column.key];
 					if (column.formatter)
 						v = column.formatter(row, v);
-					let align = column.align ?? 'left';
+					const align = column.align ?? 'left';
 					tRow.insertAdjacentHTML('beforeend',`<td class="${_clTDataCell} _byb_${align}">${v}</td>`);
 				}
 				_dataGrid.appendChild(tRow);
@@ -635,7 +612,7 @@ function BybGrid(options) {
 			let qStart = _options.dataUrl.indexOf('?') == -1 ? '?':'&';
 			const searchVal = new URLSearchParams();
 			const searchKey = new URLSearchParams();
-			const searchInputs = _innerContainer.querySelectorAll('._byb_grid_search_field');
+			const searchInputs = _innerContainer.querySelectorAll(`.${_clGSearchField}`);
 			searchInputs.forEach((inp) => {
 				if (inp.value) {
 					searchKey.append('searchkey[]', inp.getAttribute('name'));
@@ -667,12 +644,9 @@ function BybGrid(options) {
 			_this.load();
 		},
 				
-		colResizeHandler: function(colIdx) {
-			_resizeMouseX = event.pageX;
-			console.log(_resizeMouseX);
-			console.log(colIdx);
-			//_resizingVertical = true;
-		},
+		//colResizeHandler: function(colIdx) {
+		//	_resizeMouseX = event.pageX;
+		//},
 
 		searchFieldKeyPressHandler: function(e) {
 			if (e.key === 'Enter') {
@@ -710,7 +684,7 @@ function BybGrid(options) {
 		},
 
 		pagerDirectionHandler: function(e) {
-			let direction = this.dataset.direction;
+			const direction = this.dataset.direction;
 			if (direction === 'first') {
 				_this.pagerAction(1);
 				return;

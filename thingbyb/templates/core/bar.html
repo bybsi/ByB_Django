@@ -1,0 +1,26 @@
+{% load static %}
+<script src="https://accounts.google.com/gsi/client" async defer></script>
+<div id="_byb_bar_left">ByB <span id="_byb_sub_title"></span><span class="_byb_version">Version: <span class="_byb_version_number">{{ version_str }}</span> <span class="_byb_bug">{{ issues }}</span></span></div>
+<div id="_byb_bar_loader" class="_byb_loading"></div>
+<div id="_byb_bar_error" class="_byb_error _byb_bar_status">Error</div>
+<div id="_byb_bar_okay" class="_byb_okay _byb_bar_status">Okay</div>
+<div id="_byb_bar_right">
+        <button id="signin_button" class="_byb_button">Sign In</button>
+	{% include "templates/core/forms/login_form.html" with modal="" %}
+        <img src="{% static "images/icons/google_n.png" %}" alt="Sign In with Google" class="gsn" onClick="googleSignInW();"/>
+        <div id="g_id_onload"
+                data-client_id="838097487856-thu269n0lhmitq3eur4gg76tls7fsasp.apps.googleusercontent.com"
+                data-callback="googleSignIn"
+                data-auto_select="false"
+                data-auto_prompt="false">
+        </div>
+        <form id="_byb_login_form_jwt">
+		{% csrf_token %}
+                <input type="hidden" name="login_username" value="jwt_google_auth">
+                <input type="hidden" name="login_password" value="jwt_google_auth_p">
+                <input type="hidden" name="jwt_token" id="jwt_token" value="">
+        </form>
+
+        <button id="register_button" class="_byb_button">Register</button>
+        <button id="help_button" class="_byb_button">?</button>
+</div>

@@ -125,43 +125,27 @@ function enableTogglers() {
 
 function test(){}
 
+function dialog_init(id, title, isModal = true, dlgClass = '') {
+	$(id).dialog({
+		autoOpen:false,
+		modal:isModal,
+		dialogClass:dlgClass,
+		resizable:true,
+		height:'auto',
+		width:'auto',
+		create: function(event,ui){
+			$(this).css("maxWidth", "600px");
+		},
+		title:title
+	});
+}
+
 var whereAmI = 'bs';
 var chat = null;
 $(function(){
-	$("#_byb_dialog").dialog({
-		autoOpen:false,
-		modal:true,
-		dialogClass:"no-close",
-		resizable:true,
-		height:'auto',
-		width:'auto',
-		create: function(event,ui){
-			$(this).css("maxWidth", "600px");
-		},
-		title:"The Dialog"
-	});
-	$("#_byb_documentation").dialog({
-		autoOpen:false,
-		modal:false,
-		resizable:true,
-		height:'auto',
-		width:'auto',
-		create: function(event,ui){
-			$(this).css("maxWidth", "600px");
-		},
-		title:"Documentation"
-	});
-	$("#_byb_float_dialog").dialog({
-		autoOpen:false,
-		modal:true,
-		resizable:true,
-		height:'auto',
-		width:'auto',
-		create: function(event,ui){
-			$(this).css("maxWidth", "600px");
-		},
-		title:""
-	});
+	dialog_init("#_byb_dialog", "The Dialog", true, "no-close");
+	dialog_init("#_byb_documentation", "Documentation", false);
+	dialog_init("#_byb_float_dialog", "");
 	$(".nav_item_icon,#logo").on('click', function(){
 		// Don't save whereAmI on external links since those
 		// icons are not left highlighted after being clicked.

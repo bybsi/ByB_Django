@@ -1,13 +1,32 @@
 {% load static %}
 <html>
-<head>
-<title>ThingByB - Dev Projects - Django</title>
-{% for css_file in css_files %} <link rel="stylesheet" href="{% static css_file %}?v={{ timestamp }}"></link>
-{% endfor %}
-{% for js_file in js_files %} <script type="text/javascript" src="{% static js_file %}?v={{ timestamp }}"></script>
-{% endfor %}
-</head>
+{% include "templates/head.html" %}
 <body>
+<div id="_byb_container">
+	<div id="_byb_left" class="_byb_right_rad">
+		<div id="_byb_logo" class="_byb_top_right_rad_10">
+			<img id="logo" src="{% static "/images/logo_b.png" %}" data-project="bs">
+		</div>
+		<div id="_byb_nav">
+			{% include "core/nav.html" %}
+		</div>
+	</div>
+	<div id="_byb_content" class="_byb_top_rad">
+		<div id="_byb_content_head" class="_byb_top_rad">
+			{% include "core/bar.html" %}
+		</div>
+		<div id="_byb_content_main">
+			{% block content %} {% endblock %}
+		</div>
+	</div>
+</div>
+<div id="_byb_footer_top"></div>
+<div id="_byb_footer_bottom"></div>
+<div id="_byb_dialog"><div id="_byb_dialog_content"></div></div>
+<div id="_byb_float_dialog"><div id="_byb_float_dialog_content"></div></div>
+<div id="_byb_documentation"><div id="_byb_documentation_content"></div></div>
+<div id="_byb_layouts"></div><!-- See CSS clip-path -->
+<div id="_byb_copy">&copy; 2025-2026. ThingByB.com.</div>
 </body>
 </html>
 

@@ -1,0 +1,42 @@
+from django.db import models
+from core.models import TimeStampedModel
+from . import settings
+
+class User(TimeStampedModel):
+    username = models.CharField(max_length=32)
+    password = models.CharField(max_length=256)
+    salt = models.CharField(max_length=8)
+    display_name = models.CharField(max_length=32)
+    contact_data = models.CharField(max_length=256)
+    first_name = models.CharField(max_length=32)
+    last_name = models.CharField(max_length=32)
+    ip4 = models.IntegerField(null=True)
+    settings_json = models.JSONField()
+    # Not a JWT token but a unique ID from auth provider such as
+    # google auth: response['sub']
+    jwt_id = models.CharField(max_length=32)
+    
+    def __str__(self):
+        return self.username
+
+
+class UserCurrency(models.Model):
+    user = models.OneToOneField(
+        User,
+        related_name='currency',
+        on_delete=models.CASCADE,
+        primary_key=True)
+    bybs = models.BigIntegerField(
+        default=settings.INITIAL_CURRENCY_BYBS, null=False)
+    andthen = models.BigIntegerField(
+        default=settings.INITIAL_CURRENCY_OTHER, null=False)
+    foris4 = models.BigIntegerField(
+        default=settings.INITIAL_CURRENCY_OTHER, null=False)
+    zilbian = models.BigIntegerField(
+        default=settings.INITIAL_CURRENCY_OTHER, null=False)
+    spark = models.BigIntegerField(
+        default=settings.INITIAL_CURRENCY_OTHER, null=False)
+
+    def __str__(self):
+        return f"{self.user.username} {self.bybs}"
+

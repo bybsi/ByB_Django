@@ -1,0 +1,26 @@
+{% load static %}
+<link rel="stylesheet" href="{% static "/css/UserPanel.css" %}?v={{version_str}}">
+<script type="text/javascript">
+var _user_settings = JSON.parse('{}');
+var _rand_id = {{user.id}};
+</script>
+<div id="user_panel">
+	<div id="user_avatar">
+		Hello 
+		<b class="user_display_name">{{user.display_name|escape}}</b>
+	</div>
+
+	<div class="user_panel_icon" data-user-action="profile">
+		<img src="{% static "/images/icons/config_white.png" %}" alt="Settings">
+	</div>
+
+	<div class="user_panel_icon" data-user-action="logout">
+		<img src="{% static "/images/icons/logout_white.png" %}" alt="Logout">
+	</div>
+
+	<div class="user_panel_icon br0" onclick="documentation();return false;">
+		<img src="{% static "/images/icons/help_white.png" %}" alt="Documentation">
+	</div>
+
+</div>
+<script type="text/javascript" src="{% static "/js/UserPanel.js" %}?v={{version_str}}">

@@ -1,0 +1,22 @@
+{% extends "templates/base.html" %}
+{% load post_extras %}
+{% load static %}
+{% block content %}
+<link rel="stylesheet" href="{% static "css/ContentLayout.css" %}?v={{version_str}}">
+<div id="content_post_container" class="content_layoutbricks">
+{% comment with count=0 as count %} {% endcomment %}
+{% for col in posts_grid %}
+	<div class="post_column">
+	{% for post in col %}
+		<div class="post_container">
+			<div class="post_header">{{post.title}}</div>
+			<div class="post_content">{{post.content|add_static_sources|safe}}</div>
+			<div class="post_footer">{{post.user.username}} | {{post.created_at}}</div>
+		</div>
+	{% endfor %}
+	</div>
+{% endfor %}
+</div>
+
+{% endblock %}
+

@@ -17,10 +17,12 @@
 	cursor:pointer;
 	border-radius: 15px;
 	align-items:center;
+	border: 1px solid transparent;
 }
 .user_panel_icon:hover {
 	background-color:#233c16;
 	border-radius:20px;
+	border:1px solid #8bc34a38;
 }
 .user_panel_icon img {
 	width:30px;

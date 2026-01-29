@@ -1,0 +1,12 @@
+{% load static %}
+{% for id, title in icons.items %}
+	<div 
+		id="_byb_{{id}}" 
+		class="nav_item_icon{% if id in request.path %} nav_item_icon_on {% endif %}" 
+		data-project="{{id}}"
+		data-title="{{title}}">
+			<img src="{% static "images/icons/"|add:id|add:".png" %}" alt="{{id|capfirst}}">
+			<br>{{id|capfirst}}
+	</div>
+{% endfor %}
+<div id="the_one_ad"><a href="https://www.icons8.com/" target="_blank">ICONS8</a></div>
