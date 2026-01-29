@@ -5,7 +5,7 @@ import os
 import hashlib
 
 class UserBackend(BaseBackend):
-    client_id = "838097487856-thu269n0lhmitq3eur4gg76tls7fsasp.apps.googleusercontent.com"
+    client_id = "***"
 
 
     def authenticate(self, request, username=None, password=None):
