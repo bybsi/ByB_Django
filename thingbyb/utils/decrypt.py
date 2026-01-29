@@ -15,10 +15,12 @@ class DBCrypt():
             f.write(cipher.iv)
         print(base64.b64encode(encrypted))
 
+
     def readkey(self, keyfile, keylen):
         with open(keyfile, 'rb') as f:
             self.key = f.read(keylen)
             self.iv = f.read()
+
 
     def __init__(self, keyfile='.keys/db.key', keylen=256, engine_str=''):
         try:
@@ -35,7 +37,9 @@ class DBCrypt():
                 keypath, 
                 keylen)
 
+
     def decrypt(self, encrypted):
         cipher = AES.new(self.key, AES.MODE_CBC, self.iv)
         return unpad(cipher.decrypt(base64.b64decode(encrypted)), AES.block_size).decode()
+
 
