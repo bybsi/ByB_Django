@@ -61,7 +61,7 @@ $(function(){
 	$("#register_button").on("click", function(evt){
 		loadDialog({
 			dialogId: "_byb_dialog", 
-			url: "/forms/register.php", 
+			url: "/users/register", 
 			evt: evt, 
 			position:{ my: 'right top', at: 'bottom left', of:evt }, 
 			title: 'Register',
@@ -76,11 +76,12 @@ function getRegisterButtonObj() {
 		text:"Register",
 		id:"register_submit_button",
 		click: function(e) {
-			let user = $("#username").val();
-			let pass = $("#password").val();
-			let pass_verify = $("#password_verify").val();
-			let captcha = $("#captcha").val();
-			let csrf_token = $("#csrf_token").val();
+			const user = $("#id_username").val();
+			const pass = $("#id_password").val();
+			const pass_verify = $("#id_password_verify").val();
+			const captcha = $("#id_captcha").val();
+			const csrf_token = $("#_byb_dialog_form [name='csrfmiddlewaretoken']").val();
+			console.log(user + pass + pass_verify + captcha);
 			if (!(captcha && user && pass && pass_verify)) {
 				registerStatus("All fields are required.");
 				return false;
@@ -89,20 +90,20 @@ function getRegisterButtonObj() {
 				registerStatus("Passwords do not match.");
 				return false;
 			}
-			fetchData("/actions/register.php", {
+			fetchData("/users/register", {
 				username:user,
 				password:pass,
 				password_verify:pass_verify,
 				captcha:captcha,
-				csrf_token:csrf_token
+				csrfmiddlewaretoken:csrf_token
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
 				registerCount++;
 				registerStatus(
-					jqXHR.responseJSON.error + (
-					registerCount >= 2 ? 
-						" Reload the register form if this keeps happening" :
-						""));
+					jqXHR.responseText + (
+					registerCount >= 3 ? 
+						" Reload the register form." 
+						: ""));
 			})
 			.done(function(data) {
 				$("#_byb_dialog").dialog("close");
@@ -110,7 +111,7 @@ function getRegisterButtonObj() {
 				if (data.registered) {
 					$("#login_username").val($("#username").val());
 					$("#login_password").val($("#password").val());
-					$("#csrf_token").val(data.csrf_token);
+					//$("#csrf_token").val(data.csrf_token);
 					$("#login_button").click();
 				}
 			}); 

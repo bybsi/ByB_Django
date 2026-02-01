@@ -22,6 +22,9 @@ STATICFILES_DIRS = [
 
 STATIC_ROOT = BASE_DIR / 'staticfiles'
 
+CAPTCHA_DIR = '/var/data/captcha'
+CAPTCHA_PENDING_DIR = CAPTCHA_DIR + '/pending'
+
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
@@ -62,8 +65,8 @@ ROOT_URLCONF = 'thingbyb.urls'
 
 GLOBAL_FILES = {
     'css_files':[
-        'jquery-ui.sructure.min.css', 
-        'jquery-ui.theme.min.css', 
+        'css/jquery-ui.structure.min.css', 
+        'css/jquery-ui.theme.min.css', 
         'css/form.css', 
         'css/fonts.css', 
         'css/layout.css', 
@@ -119,6 +122,16 @@ DATABASES = {
         'PORT': '3306',
         'OPTIONS': {
             'init_command': 'SET default_storage_engine=INNODB',
+        }
+    }
+}
+
+CACHES = {
+    "default": {
+        "BACKEND": "django_redis.cache.RedisCache",
+        "LOCATION": "redis://127.0.0.1:6379",
+        "OPTIONS": {
+            "CLIENT_CLASS": "django_redis.client.DefaultClient",
         }
     }
 }

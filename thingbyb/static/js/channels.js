@@ -549,7 +549,7 @@ class ByBChat
 		this.container.appendTo("body");
 		$(`
 <div id="_byb_chat_icon" onClick="$('#${this.wrapperId}').toggle();">
-	<img src="images/icons/chat.png" alt="Chat">Channels<br>( toggle )
+	<img src="static/images/icons/chat.png" alt="Chat">Channels<br>( toggle )
 </div>`).appendTo("body");
 
 		this.channels = new ChannelList(this.chatId);

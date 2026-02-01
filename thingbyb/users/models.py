@@ -10,7 +10,7 @@ class User(TimeStampedModel):
     contact_data = models.CharField(max_length=256)
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
-    ip4 = models.IntegerField(null=True)
+    ip4 = models.BigIntegerField(null=True)
     settings_json = models.JSONField()
     # Not a JWT token but a unique ID from auth provider such as
     # google auth: response['sub']
@@ -18,6 +18,20 @@ class User(TimeStampedModel):
     
     def __str__(self):
         return self.username
+
+    
+    def create_user_currency(self):
+        '''
+        Sets up the users paper trading account wallet.
+        '''
+        try:
+            UserCurrency.objects.create(user=self)
+        except Exception as e:
+            # TODO logging
+            print(f"Could not create user currency {e}")
+            return False
+        # TODO
+        return True
 
 
 class UserCurrency(models.Model):
@@ -36,6 +50,9 @@ class UserCurrency(models.Model):
         default=settings.INITIAL_CURRENCY_OTHER, null=False)
     spark = models.BigIntegerField(
         default=settings.INITIAL_CURRENCY_OTHER, null=False)
+    
+    class Meta:
+        verbose_name_plural = 'User Wallet'
 
     def __str__(self):
         return f"{self.user.username} {self.bybs}"

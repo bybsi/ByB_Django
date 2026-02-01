@@ -240,12 +240,12 @@
 ._byb_loading {
 	display:none;
 	position:relative;
-	content:url(/images/loader.gif);
+	content:url(/static/images/loader.gif);
 	height:36px;
 }
 ._byb_dialog_loading:before {
 	position:absolute;
-	content:url(/images/loader.gif);
+	content:url(/static/images/loader.gif);
 	height:36px;
 	text-align:center;
 	z-index:10;
