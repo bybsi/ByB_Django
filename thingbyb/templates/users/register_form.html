@@ -1,0 +1,30 @@
+<div class="_byb_dialog_form">
+        <form id="_byb_dialog_form">
+		{% csrf_token %}
+                <div class="_byb_dialog_form_cell">
+                        <label for="username">Username</label><br>
+			{{ form.username }}
+                </div>
+                <div class="_byb_dialog_form_cell">
+                        <label for="password">Password</label><br>
+			{{ form.password }}
+		</div>
+                <div class="_byb_dialog_form_cell">
+                        <label for="password_verify">Verify Password</label><br>
+			{{ form.password_verify }}
+                </div>
+                <div class="_byb_dialog_form_cell">
+                        <label for="captcha">Enter the <i>letters</i> in numeric order.</label><br>
+                        <img src="data:image/png;base64,{{ captcha }}" class="_byb_captcha">
+			{{ form.captcha }}
+                </div>
+                <div id="register_status" class="_byb_dialog_form_cell _byb_error"></div>
+        </form>
+</div>
+<script type="text/javascript">
+$(document).on('keypress', function(evt) {
+        if (evt.key == 'Enter' && $("#register_submit_button").length) {
+                $("#register_submit_button").click();
+        }
+});
+</script>
