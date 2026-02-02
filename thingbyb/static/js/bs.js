@@ -109,7 +109,12 @@ var whereAmIMap = {'bs':0,'music':4,'trading':7};
 function documentation(activeIndex = 0) {
 	if (!activeIndex && whereAmI in whereAmIMap)
 		activeIndex = whereAmIMap[whereAmI];
-	loadDialog({dialogId:"_byb_documentation", url:`/documentation.php?ai=${activeIndex}&v=${Date.now()}`, title:"Interactive Documentation"});
+	loadDialog({
+		dialogId:"_byb_documentation", 
+		//url:`/documentation.php?ai=${activeIndex}&v=${Date.now()}`, 
+		url:`https://thingbyb.com/documentation.php?ai=${activeIndex}&v=${Date.now()}`, 
+		title:"Interactive Documentation"
+	});
 }
 	
 function enableTogglers() {
