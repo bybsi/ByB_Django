@@ -1,0 +1,18 @@
+<div class="_byb_dialog_form">
+    <form id="_byb_dialog_form" action="javascript:void(0);">
+    	{% csrf_token %}
+        <div class="_byb_dialog_form_cell">
+            <b>Username: </b>{{user.username|escape}}
+        </div>
+        <div class="_byb_dialog_form_cell">
+		{{ form.display_name.label_tag }}
+		{{ form.display_name }}
+        </div>
+        <div class="_byb_dialog_form_cell">
+		{{ form.contact_data.label_tag }}
+		{{ form.contact_data }}
+        </div>
+        <div id="profile_status" class="_byb_dialog_form_cell"></div>
+    </form>
+</div>
+
