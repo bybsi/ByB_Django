@@ -29,6 +29,8 @@ CAPTCHA_PENDING_DIR = CAPTCHA_DIR + '/pending'
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
+# TODO keep this secret like I do for the database and googleauth:
+#    secret_db_pw = DBCrypt().decrypt('LZyBY1sWkFGnqwJjS0C/sw==')
 SECRET_KEY = 'django-insecure-fq!z&2wlzv))9$a#m(xefj%@kv+p86b!^33s&k046cy54b)2dw'
 
 # SECURITY WARNING: don't run with debug turned on in production!
