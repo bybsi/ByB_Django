@@ -90,7 +90,6 @@ GLOBAL_FILES = {
         'music':'ByBGrid Demo (Music)',
         'code':'Code',
         'reactjs':'React',
-        'bounders':'Bounders'
     }
 }
 
