@@ -1,3 +1,7 @@
+'''
+Helper functions related to Users.
+'''
+
 from .models import User
 from utils.decrypt import DBCrypt
 import re
