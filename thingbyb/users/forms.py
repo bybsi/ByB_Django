@@ -11,3 +11,9 @@ class RegisterForm(forms.Form):
     )
     captcha = forms.CharField(max_length=5)
 
+
+class SettingsForm(forms.Form):
+    display_name = forms.CharField(max_length=32, required=False)
+    contact_data = forms.CharField(max_length=256, required=False)
+
+

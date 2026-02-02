@@ -9,9 +9,10 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest
 )
-from .forms import RegisterForm
+from .forms import RegisterForm, SettingsForm
 from utils.captcha import get_captcha, validate_captcha
 from . import module as user_module
+from html import escape as html_encode
 
 def login(request):
     if request.method != 'POST':
@@ -100,11 +101,42 @@ def register(request):
         context={
             'form': RegisterForm(),
             'captcha': get_captcha()
-        }
-    )
+        })
 
 
+def settings(request):
+    if request.method == 'POST':
+        form = SettingsForm(request.POST)
+        if not form.is_valid():
+            return JsonResponse(
+                {'error': 'Invalid input.'},
+                status=406)
 
+        user = request.user
+        user.display_name = form.cleaned_data['display_name'] or user.username
+        user.contact_data = form.cleaned_data['contact_data']
+        try:
+            user.save()
+        except Exception as e:
+            # TODO logging.
+            print(f"Error saving user {e}")
+            return JsonResponse(
+                {'error': 'Could not save data.'},
+                status=500)
+
+        return JsonResponse(
+            {'saved':True, 'display_name':user.display_name},
+            status=200)
+
+    return render(
+        request,
+        'templates/users/settings_form.html',
+        context={
+            'form': SettingsForm(initial={
+                'display_name':html_encode(request.user.display_name),
+                'contact_data':html_encode(request.user.contact_data),
+            }),
+        })
 
 
 
