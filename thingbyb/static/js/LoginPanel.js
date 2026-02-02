@@ -84,7 +84,6 @@ function getRegisterButtonObj() {
 			const pass_verify = $("#id_password_verify").val();
 			const captcha = $("#id_captcha").val();
 			const csrf_token = $("#_byb_dialog_form [name='csrfmiddlewaretoken']").val();
-			console.log(user + pass + pass_verify + captcha);
 			if (!(captcha && user && pass && pass_verify)) {
 				registerStatus("All fields are required.");
 				return false;
@@ -112,8 +111,8 @@ function getRegisterButtonObj() {
 				$("#_byb_dialog").dialog("close");
 				$("#register_submit_button").remove();
 				if (data.registered) {
-					$("#login_username").val($("#username").val());
-					$("#login_password").val($("#password").val());
+					$("#login_username").val($("#id_username").val());
+					$("#login_password").val($("#id_password").val());
 					//$("#csrf_token").val(data.csrf_token);
 					$("#login_button").click();
 				}
