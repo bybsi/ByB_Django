@@ -1,9 +1,10 @@
 from django.db import models
+from django.contrib.auth.models import AbstractUser
 from core.models import TimeStampedModel
 from . import settings
 
-class User(TimeStampedModel):
-    username = models.CharField(max_length=32)
+class User(AbstractUser, TimeStampedModel):
+    username = models.CharField(max_length=32, unique=True)
     password = models.CharField(max_length=256)
     salt = models.CharField(max_length=8)
     display_name = models.CharField(max_length=32)
@@ -11,7 +12,8 @@ class User(TimeStampedModel):
     first_name = models.CharField(max_length=32)
     last_name = models.CharField(max_length=32)
     ip4 = models.BigIntegerField(null=True)
-    settings_json = models.JSONField()
+    settings_json = models.JSONField(default=dict)
+    last_login = models.DateTimeField(verbose_name='last login', auto_now=True, null=True, blank=True)
     # Not a JWT token but a unique ID from auth provider such as
     # google auth: response['sub']
     jwt_id = models.CharField(max_length=32)

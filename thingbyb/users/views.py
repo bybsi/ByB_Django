@@ -1,5 +1,9 @@
-from django.contrib.auth import authenticate, login
-from django.shortcuts import render
+from django.contrib.auth import (
+    authenticate, 
+    login as auth_login, 
+    logout as auth_logout
+)
+from django.shortcuts import render, redirect
 from django.http import (
     JsonResponse, 
     HttpResponse,
@@ -13,8 +17,16 @@ def login(request):
     if request.method != 'POST':
         return HttpResponseBadRequest(f"Invalid method: {request.method}")
 
-    if 'sid_login' in request.POST and request.user.is_authenticated:
-        return user_panel(request)
+    if request.user.is_staff:
+        return HttpResponse(
+            "Log out of admin panel first.",
+            content_type="text/plain",
+            status=406)
+
+    if 'sid_login' in request.POST:
+        if request.user.is_authenticated:
+            return user_panel(request)
+        return HttpResponse("", content_type="text/plain",status=500)
 
     user = authenticate(
         request, 
@@ -22,13 +34,25 @@ def login(request):
         password=request.POST['login_password'])
 
     if user is not None:
-        login(request, user)
+        auth_login(request, user)
         return user_panel(request)
 
     return HttpResponse(
         "Invalid Credentials",
         content_type="text/plain",
         status=406)
+
+
+def logout(request):
+    if request.method == "POST":
+        auth_logout(request)
+        return redirect('/')
+    
+    return HttpResponse(
+        "Invalid Logout Method",
+        content_type="text/plain",
+        status=406)
+
 
 def user_panel(request):
      return render(request, 'templates/users/user_panel.html')

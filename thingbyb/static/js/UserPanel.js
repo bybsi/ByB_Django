@@ -2,7 +2,7 @@
 // Redefined here on successful login.
 var _user = {
     username: $("#user_avatar .user_display_name").html(),
-    settings: user_settings, // components/user_panel.php
+    //settings: user_settings, // components/user_panel.php
     set: function(key, value) {
         this.settings[key] = value;
     },
@@ -35,6 +35,9 @@ var _user = {
         _styleWidget.setContentHeaderOpacity(_user.settings.opa);
     },
     logout: function() {
+    	console.log("here");
+    	$("#logout_form").submit();
+    	/*
         fetchData("/actions/logout.php").done(function(data) {
             try {
                 if (data.logged_out) {
@@ -46,6 +49,7 @@ var _user = {
                 console.log(error);
             }
         });
+	*/
     },
     profile: function(evt) {
         loadDialog({dialogId:"_byb_dialog", url:"/forms/profile.php", title:"Settings", evt:evt, position:{my:'right top',at:'bottom left',of:evt}, buttons:{

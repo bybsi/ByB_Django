@@ -21,6 +21,8 @@ var _rand_id = {{user.id}};
 	<div class="user_panel_icon br0" onclick="documentation();return false;">
 		<img src="{% static "/images/icons/help_white.png" %}" alt="Documentation">
 	</div>
-
+	<form method="POST" action="/users/logout" id="logout_form" style="display:none;">
+		{% csrf_token %}
+	</form>
 </div>
 <script type="text/javascript" src="{% static "/js/UserPanel.js" %}?v={{version_str}}">

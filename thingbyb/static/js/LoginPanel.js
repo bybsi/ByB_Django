@@ -7,7 +7,10 @@ function loginAction(e, formId) {
 		$("#"+formId).serialize(), 
 		{dataType:'html'}
 	).fail(function(jqXHR, textStatus, errorThrown) {
-		pageError(jqXHR.responseText);
+		if (jqXHR.responseText) 
+			pageError(jqXHR.responseText);
+		else
+			$("#_byb_bar_error").hide();
 	}).done(function(data){
 		if (data) {
 			$("#_byb_bar_right").html(data);
