@@ -13,7 +13,6 @@ def create_user(username, password, ip4, jwt_data=None):
     jwt_data is set if Google auth is being used to login.
     Returns the new user on success, or None on failure.
     '''
-    print(int(ipaddress.IPv4Address(ip4)))
     hash_data = make_password_hash(password)
     new_user = User(
         username=username,

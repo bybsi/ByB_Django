@@ -5,14 +5,6 @@ from django.conf import settings
 from django.core.cache import cache
 
 def get_captcha():
-#    try:
-#        captcha = cache.client.get_client()
-#        info = captcha.info()
-#        print(f"{info['connected_clients']}")
-#        print(f"{info['used_memory_human']}")
-#    except Exception as e:
-#        print(f"EEEEE{e}")
-
     try:
         client = cache.client.get_client()
         captcha = client.lpop("captcha-queue").decode('utf-8') + '.png'
@@ -29,9 +21,7 @@ def get_captcha():
 
 
 def validate_captcha(captcha):
-    print(f"{captcha}")
     filepath = os.path.join(settings.CAPTCHA_PENDING_DIR, captcha.lower()) + '.png'
-    print(f"{filepath}")
     if not os.path.isfile(filepath):
         return False
 
