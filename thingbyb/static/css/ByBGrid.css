@@ -142,35 +142,35 @@
 }
 ._byb_grid_icon_left_h::after {
 	content:'\2190';
-	content:url(/images/icons/grid_left_h.png);
+	content:url(/static/images/icons/grid_left_h.png);
 }
 ._byb_grid_icon_right_h::after {
 	content:'\2192';
-	content:url(/images/icons/grid_right_h.png);
+	content:url(/static/images/icons/grid_right_h.png);
 }
 ._byb_grid_icon_left_v::after {
 	content:'\2191';
-	content:url(/images/icons/grid_left_v.png);
+	content:url(/static/images/icons/grid_left_v.png);
 }
 ._byb_grid_icon_right_v::after {
 	content:'\2193';
-	content:url(/images/icons/grid_right_v.png);
+	content:url(/static/images/icons/grid_right_v.png);
 }
 ._byb_grid_icon_first_h::after {
 	content:'\21E4';
-	content:url(/images/icons/grid_first_h.png);
+	content:url(/static/images/icons/grid_first_h.png);
 }
 ._byb_grid_icon_last_h::after {
 	content:'\21E5';
-	content:url(/images/icons/grid_last_h.png);
+	content:url(/static/images/icons/grid_last_h.png);
 }
 ._byb_grid_icon_first_v::after {
 	content:'\219F';
-	content:url(/images/icons/grid_first_v.png);
+	content:url(/static/images/icons/grid_first_v.png);
 }
 ._byb_grid_icon_last_v::after {
 	content:'\21A1';
-	content:url(/images/icons/grid_last_v.png);
+	content:url(/static/images/icons/grid_last_v.png);
 }
 ._byb_grid_pager_icon {
 	cursor:pointer;
@@ -322,7 +322,7 @@
 	content:'\25BC';
 }
 ._byb_grid_refresh_button {
-	background: url('/images/icons/refresh1.png');
+	background: url('/static/images/icons/refresh1.png');
 	background-repeat:no-repeat;
 	cursor:pointer;
 	width:16px;

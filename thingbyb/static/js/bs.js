@@ -151,12 +151,14 @@ $(function(){
 	dialog_init("#_byb_dialog", "The Dialog", true, "no-close");
 	dialog_init("#_byb_documentation", "Documentation", false);
 	dialog_init("#_byb_float_dialog", "");
+
+	// Left side nav handler.
 	$(".nav_item_icon,#logo").on('click', function(){
 		// Don't save whereAmI on external links since those
 		// icons are not left highlighted after being clicked.
 		let project = $(this).data('project');
 		if (project == 'bs') {
-			window.location.href = 'index.php?p=bs';
+			window.location.href = '/';
 			whereAmI = project;
 		} else if (project == 'code') {
 			window.open("https://github.com/bybsi/", "_blank");
@@ -169,7 +171,9 @@ $(function(){
 					_trade.destroy();
 					_trade = null;
 				}
-				$("#_byb_content_main").load(`index.php?p=${project}&partial=1`, function() {
+				if (project == 'running')
+					project = 'activities';
+				$("#_byb_content_main").load(`/` + project, function() {
 					console.log('Project ' + project + ' loaded');
 				});
 				$('#_byb_'+whereAmI).removeClass('nav_item_icon_on');
