@@ -17,7 +17,7 @@ try:
         next(fh)
         for line in fh:
             line = line.replace('"','')
-            (t, timestamp, _1, title, distance, _2, time, heart_rate, _3, _4, _5, avg_pace, best_pace, ascent, descent, _stl, _a,_b,_c,_d,_e,_f,_g,moving_time, _rest) = line.rstrip().split(',', 24)
+            (t, timestamp, _, title, distance, _, time, heart_rate, _, _, _, avg_pace, best_pace, ascent, descent, _stl, _,_,_,_,_,_,_,moving_time, _rest) = line.rstrip().split(',', 24)
             if 'walking' in t.lower():
                 continue
             output += "('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')".format(
