@@ -1,0 +1,63 @@
+{% load static %}
+<link rel="stylesheet" href="{% static "css/Activities.css" %}?v={{version_str}}">
+{% include "core/bybgrid.html" %}
+<div id="running_legend">
+	<div class="rl rl_5k">&gt;= 5k</div>
+	<div class="rl rl_10k">&gt;= 10k</div>
+	<div class="rl rl_1m">One mile</div>
+</div>
+<div id="bybgrid_running"></div>
+<div id="running_pager"></div>
+<script>
+var columns = [
+	//{key:'type',label:'Type'},
+	{key:'title',label:'Title'},
+	{key:'date',label:'Date',align:'center'},
+	{key:'distance',label:'Distance (miles)', align:'right', searchType: ' > miles', formatter:_distanceFormatter},
+	{key:'time',label:'Time',align:'center',formatter:_runningTimeFormatter},
+	{key:'avg_pace',label:'Avg Pace / mile',align:'right'},
+	{key:'best_pace',label:'Best Pace / mile',align:'right'},
+	{key:'heart_rate',label:'Heart Rate (bpm)',align:'right', searchType: ' > bpm'},
+	{key:'ascent',label:'Ascent (feet)',align:'right', searchType: ' > feet'},
+	{key:'descent',label:'Descent (feet)',align:'right', searchType: ' > feet'}
+];
+var todoGrid = BybGrid({
+	containerId:'bybgrid_running',
+	loadingClass:'_byb_dialog_loading',
+	dataUrl:'/activities/data',
+	columns:columns,
+	autoColumnWidth:true,
+	sortOrder:'desc',
+	sortKey:'date',
+	searchBar:true,
+	pager:true,
+	pagerId:'running_pager',
+	height:'400px',
+	rowCount:20,
+	resizeVertical:true,
+	hPagerOverlap:true,
+	layoutType:'table'
+});
+todoGrid.init();
+todoGrid.load();
+
+function _runningTimeFormatter(row, val) {
+	let endIdx = val.indexOf('.');
+	val = endIdx == -1 ? val : val.substring(0, endIdx);
+	return val;
+}
+
+function _distanceFormatter(row, val) {
+	const distance = parseFloat(val);
+	if (distance >= 6.2)
+		return `<span class="rl_tag rl_10k">${val}</span>`;
+	else if (distance >= 3.1)
+		return `<span class="rl_tag rl_5k">${val}</span>`;
+	else if (distance >= 1.0)
+		return `<span class="rl_tag rl_1m">${val}</span>`;
+	return val;
+}
+
+</script>
+
+
