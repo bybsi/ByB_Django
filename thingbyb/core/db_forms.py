@@ -53,7 +53,16 @@ class DBQueryForm(forms.Form):
         return cleaned_data
 
 
-def build_query_filter(column_names, values):
+def db_grid_query_filter(column_names, values):
+    '''
+    Creates a DB filter for searching on multiple fields.
+    It is assumed that len(column_names) must equal len(values),
+    which should be handled in a validator before calling this.
+    :param column_names:The names of the columns.
+    :param values:The values of the corresponding column name.
+    :returns:A dict where the column name is the django db filter key
+    and the value is the search value.
+    '''
     filters = {}
     for idx, col_name in enumerate(column_names):
         key = col_name.lower()
@@ -83,7 +92,7 @@ def db_grid_query(model, form):
         order = data['sortkey']
 
     results = model.objects.filter(
-            **build_query_filter(data['searchkey'], data['searchval'])
+            **db_grid_query_filter(data['searchkey'], data['searchval'])
         ).order_by(order)
     
     paginator = Paginator(results, data['limit'])
