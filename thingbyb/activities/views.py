@@ -21,16 +21,15 @@ def index(request):
     
 
 def get_data(request):
-    print(request.GET)
     form = DBQueryForm(request.GET)
     if not form.is_valid():
         return JsonResponse(
             {'error': 'Invalid API call.'},
-            status=406)
+            status=500)
     
     data = form.cleaned_data
     return JsonResponse(
-        {'error', 'Invalid API call.'},
+        {'error': 'Invalid API call.'},
         status=406)
 
 
