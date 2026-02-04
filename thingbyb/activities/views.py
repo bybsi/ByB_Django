@@ -4,20 +4,19 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest
 )
-from core.forms import DBQueryForm
+from core.db_forms import DBQueryForm, db_grid_query
 from html import escape as html_encode
+from .models import Activity
+from django.core.paginator import Paginator, EmptyPage
+from django.db.models import Q, DateTimeField, CharField, TimeField
+from django.db.models.functions import TruncSecond, Cast
 
 # Create your views here.
 def index(request):
     return render(
         request,
         'templates/activities/content.html',
-        context={
-#            'form': SettingsForm(initial={
-#                'display_name':html_encode(request.user.display_name),
-#                'contact_data':html_encode(request.user.contact_data),
-#            }),
-        })
+        context={})
     
 
 def get_data(request):
@@ -26,15 +25,7 @@ def get_data(request):
         return JsonResponse(
             {'error': 'Invalid API call.'},
             status=500)
-    
-    data = form.cleaned_data
-    return JsonResponse(
-        {'error': 'Invalid API call.'},
-        status=406)
 
-
-
-
-
+    return JsonResponse(db_grid_query(Activity, form), status=200)
 
 
