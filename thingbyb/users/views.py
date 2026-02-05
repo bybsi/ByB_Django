@@ -139,6 +139,13 @@ def settings(request):
         })
 
 
+def login_form(request):
+    return render(
+        request,
+        'templates/core/forms/login_form.html',
+        # TODO it would make more sense to make this a bool
+        # and then create the label appropriately in the template.
+        context={'modal': '_modal'})
 
 
 

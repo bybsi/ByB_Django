@@ -50,7 +50,16 @@ $(function(){
 	$("#login_button").click();
 	$("#sid_login").remove();
 	$("#signin_button").on('click', function(evt){
-		loadDialog({dialogId:"_byb_dialog", url:"forms/login_form.php?modal=1", evt:evt, position:{my:'right top',at:'bottom left',of:evt}, title:'Sign In',buttons:{
+		loadDialog({
+			dialogId: "_byb_dialog", 
+			url: "/users/login_form", 
+			evt: evt, 
+			position: {
+				my:'right top',
+				at:'bottom left',
+				of:evt}, 
+			title: 'Sign In',
+			buttons:{
 			"Login": {
 				text:"Login",
 				id:"login_button_modal",
