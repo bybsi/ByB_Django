@@ -316,7 +316,7 @@ export function ByBTrade(options) {
 			_orderHistoryGrid = new BybGrid({
 				containerId:_options.orderHistoryId,
 				loadingClass:'_byb_dialog_loading',
-				dataUrl:'http://192.168.11.103:80/api/index.php?r=data_trade_order',
+				dataUrl:'trading/trade_orders',
 				columns:columns,
 				autoColumnWidth:true,
 				layoutType:'table',
