@@ -122,6 +122,7 @@ function BybGrid(options) {
 			}
 			
 			_container = document.getElementById(_options.containerId);
+			_container.classList.add('_byb_grid_container');
 			_container.replaceChildren();
 			
 			_innerContainerId = _options.containerId + '_inner';
@@ -202,7 +203,8 @@ function BybGrid(options) {
 			refreshElem.id = _id + '_rb';
 			refreshElem.title = 'Refresh';
 			refreshElem.classList.add('_byb_grid_refresh_button');
-			_innerContainer.append(refreshElem);
+			//_innerContainer.append(refreshElem);
+			_container.append(refreshElem);
 			refreshElem.addEventListener('click', function(evt) {
 				_this.reload();
 			});
