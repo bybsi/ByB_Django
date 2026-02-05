@@ -71,7 +71,7 @@ export function ByBTrade(options) {
 			_container = $('#' + _options.containerId).addClass(_clTrade);
 			_marketPanel = $('#' + _clMarketPanel);
 			_tradeMonitor = new ByBSVGTradeMonitor({
-				monitorURL:'/api/datastream_v3.php',
+				monitorURL:'http://192.168.11.103:80/api/datastream_v3.php',
 			});
 			
 			for (const market of _options.markets) {
@@ -81,16 +81,16 @@ export function ByBTrade(options) {
 				const fillId = market.key + '_fill';
 				market.container = $(`<div id="${market.key}" class="${_clPanel}">`);
 				market.chart = new ByBSVGChart({
-					dataURL:`/api/graph.php?ticker=${market.key.toUpperCase()}&period=15m`,
+					dataURL:`http://192.168.11.103:80/api/graph.php?ticker=${market.key.toUpperCase()}&period=15m`,
 					containerId:chartId,
 					title:market.label
 				});
 				market.book = new ByBOrderBook({
-					dataURL:`/api/index.php?r=trade_order_book&ticker=${market.key.toUpperCase()}`,
+					dataURL:`http://192.168.11.103:80/api/index.php?r=trade_order_book&ticker=${market.key.toUpperCase()}`,
 					containerId:bookId
 				});
 				market.fill = new ByBFillPanel({
-					dataURL:`/api/index.php?r=trade_order_fills&ticker=${market.key.toUpperCase()}`,
+					dataURL:`http://192.168.11.103:80/api/index.php?r=trade_order_fills&ticker=${market.key.toUpperCase()}`,
 					containerId:fillId,
 					tradeContext:this
 				});
@@ -153,7 +153,7 @@ export function ByBTrade(options) {
 			_cart = $("#"+_options.cartId);
 			_wallet = new ByBTradeWallet({
 				containerId:'_byb_trade_wallet',
-				dataURL:'/api/index.php?r=trade_wallet',
+				dataURL:'http://192.168.11.103:80/api/index.php?r=trade_wallet',
 			});
 			_wallet.init();
 			_wallet.load();
@@ -261,7 +261,7 @@ export function ByBTrade(options) {
 					$(this).html("Place Order");
 				}, 1000);
 				
-				fetchData("/api/index.php?r=trade_order_create", {
+				fetchData("http://192.168.11.103:80/api/index.php?r=trade_order_create", {
 					ticker:ticker,
 					amount:amount,
 					price:price,
@@ -316,7 +316,7 @@ export function ByBTrade(options) {
 			_orderHistoryGrid = new BybGrid({
 				containerId:_options.orderHistoryId,
 				loadingClass:'_byb_dialog_loading',
-				dataUrl:'/api/index.php?r=data_trade_order',
+				dataUrl:'http://192.168.11.103:80/api/index.php?r=data_trade_order',
 				columns:columns,
 				autoColumnWidth:true,
 				layoutType:'table',
@@ -347,7 +347,7 @@ export function ByBTrade(options) {
 			_leaderBoardGrid = new BybGrid({
 				containerId:_options.leaderboardId,
 				loadingClass:'_byb_dialog_loading',
-				dataUrl:'/api/index.php?r=data_trade_leaderboard',
+				dataUrl:'http://192.168.11.103:80/api/index.php?r=data_trade_leaderboard',
 				columns:columns,
 				autoColumnWidth:true,
 				sortOrder:'desc',
@@ -381,7 +381,7 @@ export function ByBTrade(options) {
 		},
 
 		_cancelOrder(orderId) {
-			fetchData("/api/index.php?r=trade_order_cancel", {
+			fetchData("http://192.168.11.103:80/api/index.php?r=trade_order_cancel", {
 				order_id:orderId,
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {

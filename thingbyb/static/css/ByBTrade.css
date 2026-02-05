@@ -382,3 +382,16 @@
 	color:#ababab;
 	background-color:#057db377;
 }
+#_byb_market_orders ._byb_grid_search_cell {
+        top:26px;
+}
+#_byb_market_orders ._byb_table_search_cell {
+        top:26px;
+}
+#_byb_market_leaderboard ._byb_grid_search_cell {
+        top:26px;
+}
+#_byb_market_leaderboard ._byb_table_search_cell {
+        top:26px;
+}
+

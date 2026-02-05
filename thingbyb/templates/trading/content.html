@@ -1,0 +1,43 @@
+{% load static %}
+{% include "core/bybgrid.html" %}
+<link rel="stylesheet" href="{% static "css/ByBTrade.css" %}?v={{version_str}}">
+<link rel="stylesheet" href="{% static "css/apexcharts.css" %}?v={{version_str}}">
+<script type="text/JavaScript" src="{% static "js/plotly-3.0.1.min.js" %}?v={{version_str}}"></script>
+<div id="markets_container"><div class="DevOverlay"></div></div>
+<div id="_byb_market_panel_container">
+	<div id="_byb_market_resize"></div>
+	<div id="_byb_market_panel">
+		<div id="markets_cart"></div>
+		<div id="_byb_market_leaderboard"></div>
+		<div id="_byb_market_orders"></div>
+	</div>
+</div>
+
+<span id="amount"></span>
+<script type="text/javascript">
+var _trade = null;
+</script>
+<script type="module">
+	import { ByBTrade } from '{% static "js/bybtrade.js" %}?{{version_str}}';
+	if (_trade) {
+		console.log("Don't think this is needed anymore");
+		_trade.destroy();
+		_trade = null;
+	}
+	_trade = new ByBTrade({
+		containerId:"markets_container",
+		cartId:"markets_cart",
+		orderHistoryId:"_byb_market_orders",
+		leaderboardId:"_byb_market_leaderboard",
+		//csrfToken:'<?=$cToken?>',
+		markets:[
+			{key:'andthen',label:'ANDTHEN',dataFeed:null},
+			{key:'foris4',label:'FORIS4',dataFeed:null},
+			{key:'spark',label:'SPARK',dataFeed:null},
+			{key:'zilbian',label:'ZILBIAN',dataFeed:null}
+		],
+	});
+	_trade.init();
+</script>
+
+

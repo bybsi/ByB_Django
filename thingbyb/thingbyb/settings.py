@@ -53,6 +53,7 @@ INSTALLED_APPS = [
     'users.apps.UsersConfig',
     'activities.apps.ActivitiesConfig',
     'posts.apps.PostsConfig',
+    'trading.apps.TradingConfig',
 ]
 
 MIDDLEWARE = [
@@ -87,7 +88,6 @@ GLOBAL_FILES = {
     'icons':{
         'trading':'Paper Trading',
         'running':'ByBGrid Demo (Running)',
-        'music':'ByBGrid Demo (Music)',
         'code':'Code',
         'reactjs':'React',
     }
