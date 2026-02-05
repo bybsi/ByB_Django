@@ -13,7 +13,7 @@ class User(AbstractUser, TimeStampedModel):
     last_name = models.CharField(max_length=32)
     ip4 = models.BigIntegerField(null=True)
     settings_json = models.JSONField(default=dict)
-    last_login = models.DateTimeField(verbose_name='last login', auto_now=True, null=True, blank=True)
+    last_login = models.DateTimeField(verbose_name='Last Login', auto_now=True, null=True, blank=True)
     # Not a JWT token but a unique ID from auth provider such as
     # google auth: response['sub']
     jwt_id = models.CharField(max_length=32)
