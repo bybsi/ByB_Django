@@ -4,7 +4,7 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest
 )
-from core.db_forms import DBQueryForm, db_grid_query
+from core.grid_query_form import DBGridQueryForm, db_grid_query
 from html import escape as html_encode
 from .models import Activity
 
