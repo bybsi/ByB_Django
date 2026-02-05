@@ -9,7 +9,10 @@ from django.core.paginator import Paginator, EmptyPage
 import re
 
 # Temporary
-int_gt_fields = {'distance','heart_rate','ascent','descent'}
+int_gt_fields = {
+    'distance','heart_rate','ascent','descent',
+    'amount','price',
+}
 
 class DBQueryForm(forms.Form):
     sortorder = forms.CharField(
@@ -76,11 +79,11 @@ def db_grid_query_filter(column_names, values):
     return filters
 
 
-def db_grid_query(model, form):
+def db_grid_query(model_manager, form):
     '''
     Queries the databases for paginated data for grids
     .
-    :param model:The ORM Model to use from appname/models.py
+    :param model_manager:The model manager to use from appname/models.py
     :param form:The validated form data/query string
     :returns: A dict object with the total row count and the
     rows for the current page
@@ -91,7 +94,7 @@ def db_grid_query(model, form):
     else:
         order = data['sortkey']
 
-    results = model.objects.filter(
+    results = model_manager.filter(
             **db_grid_query_filter(data['searchkey'], data['searchval'])
         ).order_by(order)
     
