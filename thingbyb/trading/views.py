@@ -4,7 +4,7 @@ from django.http import (
     HttpResponse,
     HttpResponseBadRequest
 )
-from core.db_forms import DBQueryForm, db_grid_query
+from core.grid_query_form import DBGridQueryForm, db_grid_query
 from html import escape as html_encode
 from .models import TradeOrder, CurrencyHold
 
@@ -13,7 +13,20 @@ def index(request):
     return render(
         request,
         'templates/trading/content.html',
-        context={})
+        context={
+            'order_form':
+        })
+
+
+def create_trade_order(request):
+    return render(
+        request,
+        'templates/users/settings_form.html',
+        context={
+            'form': SettingsForm(initial={
+                'display_name':html_encode(request.user.display_name),
+                'contact_data':html_encode(request.user.contact_data),
+            }),
 
 
 def get_trade_orders(request):
