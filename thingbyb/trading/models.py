@@ -3,11 +3,10 @@ from core.models import TimeStampedModel
 from users.models import User
 
 class TradeOrder(TimeStampedModel):
-    user = models.OneToOneField(
+    user = models.ForeignKey(
         User,
-        related_name='trade_order',
-        on_delete=models.CASCADE,
-        primary_key=True)
+        related_name='trade_orders',
+        on_delete=models.CASCADE)
     ticker = models.CharField(max_length=8)
     side = models.CharField(max_length=1)
     status = models.CharField(max_length=1)

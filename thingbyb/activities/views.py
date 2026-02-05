@@ -22,6 +22,6 @@ def get_data(request):
             {'error': 'Invalid API call.'},
             status=500)
 
-    return JsonResponse(db_grid_query(Activity, form), status=200)
+    return JsonResponse(db_grid_query(Activity.objects, form), status=200)
 
 
