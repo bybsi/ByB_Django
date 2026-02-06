@@ -25,11 +25,11 @@ class TradeOrder(TimeStampedModel):
 class CurrencyHold(TimeStampedModel):
     user = models.ForeignKey(
         User,
-        related_name='currency_hold',
+        related_name='currency_holds',
         on_delete=models.CASCADE)
     order = models.OneToOneField(
         TradeOrder,
-        related_name='trade_order',
+        related_name='currency_hold',
         on_delete=models.CASCADE)
     ticker = models.CharField(max_length=8)
     amount = models.BigIntegerField()

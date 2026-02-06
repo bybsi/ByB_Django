@@ -11,7 +11,7 @@ from utils.currency import Currency
 from html import escape as html_encode
 from users.models import UserCurrency
 from .models import TradeOrder, CurrencyHold
-from .forms import TradeOrderForm
+from .forms import TradeOrderForm, CancelOrderForm
 from . import settings
 from datetime import datetime
 from django.core import serializers
@@ -69,7 +69,7 @@ def create_trade_order(request):
         ch_amount = total_cost
     elif side == 'S':
         ch_ticker = ticker.lower()
-        ch_amount = Currency.decimal_to_currency(amount)
+        ch_amount = amount
 
     try:
         hold = CurrencyHold(
@@ -193,7 +193,58 @@ def create_order(user, status, ticker, side, type, amount, price, dt_now=None):
 
 @ajax_login_required
 def cancel_trade_order(request):
-    pass
+    
+    form = CancelOrderForm(request.POST)
+    if not form.is_valid():
+        return JsonResponse(
+            {'error':'Invalid request params.'},
+            status=200)
+
+    data = form.cleaned_data
+    try:
+        order = TradeOrder.objects.get(pk=data['order_id'])
+    except TradeOrder.DoesNotExist:
+        print(f"Trade order doesn't exist")
+        return JsonResponse(
+            {'error':'Order no longer exists.'},
+            status=200)
+
+    ch = order.currency_hold
+    if ch:
+        wallet = request.user.currency
+        setattr(
+            wallet, 
+            ch.ticker.lower(), 
+            getattr(wallet, ch.ticker.lower()) + ch.amount)
+        try:
+            wallet.save()
+            ch.delete()
+        except Exception as e:
+            print(f"Error saving wallet {e}")
+            return JsonResponse(
+                {'error':'Order could not be canceled.'},
+                status=200)
+    else:
+        print(f"Should have been a currency hold...")
+       
+
+    order.status = 'X'
+    try:
+        order.save()
+    except Exception as e:
+        print(f"Order status could not be updated. {e}")
+        return JsonResepon(
+            {'error':'Order status could not be updated.'},
+            status=200)
+            
+    return JsonResponse({
+        'success':1,
+        'message':'Order canceled.',
+        'amount':order.amount,
+        'price':order.price,
+        'ticker':order.ticker,
+        'side':order.side
+    }, status=200)
 
 
 @ajax_login_required

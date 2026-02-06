@@ -12,3 +12,7 @@ class TradeOrderForm(forms.Form):
     amount = forms.DecimalField()
 
 
+class CancelOrderForm(forms.Form):
+    order_id = forms.IntegerField(min_value=1)
+
+

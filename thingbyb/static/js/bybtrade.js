@@ -382,8 +382,9 @@ export function ByBTrade(options) {
 		},
 
 		_cancelOrder(orderId) {
-			fetchData("http://192.168.11.103:80/api/index.php?r=trade_order_cancel", {
+			fetchData("trading/cancel_trade_order", {
 				order_id:orderId,
+				csrfmiddlewaretoken:_options.csrfToken
 			})
 			.fail(function(jqXHR, textStatus, errorThrown) {
 				pageError("Error canceling order, see F12");
