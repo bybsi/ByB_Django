@@ -73,6 +73,9 @@ $(function() {
 	{
 		_trade.reloadCart();
 		_trade.reloadOrderHistory();
+		_trade.setCSRFToken(
+			$("#logout_form input[name='csrfmiddlewaretoken']").val()
+		);
 	}
 });
 

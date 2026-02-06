@@ -46,7 +46,9 @@ export function ByBTradeWallet(options) {
 				false)
 				.done(function(data) {
 					_balanceContainer.empty();
-					for (const [ticker, amount] of Object.entries(data)) {
+					for (let [ticker, amount] of Object.entries(data)) {
+						if (ticker == 'bybs')
+							amount /= 1000000;
 						_balanceContainer.append($(
 `<div class="_byb_market_row _byb_market_row_${ticker}">
 	<span class="_byb_cart_label">${ticker.toUpperCase()}</span>

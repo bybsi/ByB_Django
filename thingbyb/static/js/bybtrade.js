@@ -1,7 +1,7 @@
 
 import { ByBFillPanel } from './fill_panel.js?10';
 import { ByBOrderBook } from './order_book.js?7';
-import { ByBTradeWallet } from './trade_wallet.js?8';
+import { ByBTradeWallet } from './trade_wallet.js?10';
 import { ByBSVGTradeMonitor } from './trade_monitor.js?7';
 import { ByBSVGChart } from './trade_chart.js?7';
 
@@ -305,7 +305,7 @@ export function ByBTrade(options) {
 			_orderHistory = $("#"+_options.orderHistoryId);
 			var columns = [
 				{key:'id',label:'Actions',width:'25px',searchable:false,formatter:this.buttonFormatter},
-				{key:'created_at',label:'Date',width:'150px',searchable:false},
+				{key:'created_at',label:'Date',width:'150px',searchable:false,formatter:this.datetimeFormatter},
 				{key:'status',label:'Status',width:'90px',searchOptions:{'':'','O':'Open','X':'Canceled','F':'Filled'},formatter:this.statusFormatter},
 				{key:'ticker',label:'Ticker',width:'75px',searchOptions:{'':'','ANDTHEN':'ANDTHEN','FORIS4':'FORIS4','SPARK':'SPARK','ZILBIAN':'ZILBIAN'}},
 				{key:'side',label:'Side',width:'50px',searchOptions:{'':'','B':'Buy','S':'Sell'},formatter:this.sideFormatter},
@@ -430,12 +430,24 @@ export function ByBTrade(options) {
 			return val;
 		},
 
+		datetimeFormatter: (row, val) => {
+			val = val.replace('T', ' ');
+			const dot_idx = val.indexOf('.');
+			if (dot_idx != -1)
+				return val.substring(0, dot_idx);
+			return val;
+		},
+
 		sideFormatter: function(row, val) {
 			if (val == 'B')
 				return 'Buy';
 			if (val == 'S')
 				return 'Sell';
 			return 'Cancel';
+		},
+
+		setCSRFToken: function(token) {
+			_options.csrfToken = token;
 		},
 
 		destroy() {

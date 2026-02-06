@@ -11,8 +11,8 @@ class TradeOrder(TimeStampedModel):
     side = models.CharField(max_length=1)
     status = models.CharField(max_length=1)
     type = models.CharField(max_length=1)
-    amount = models.BigIntegerField()
-    price = models.BigIntegerField()
+    amount = models.FloatField()
+    price = models.FloatField()
     filled_at = models.DateTimeField(verbose_name='Filled At', null=True, blank=True)
 
     class Meta:
@@ -27,7 +27,7 @@ class CurrencyHold(TimeStampedModel):
         User,
         related_name='currency_hold',
         on_delete=models.CASCADE)
-    order_id = models.OneToOneField(
+    order = models.OneToOneField(
         TradeOrder,
         related_name='trade_order',
         on_delete=models.CASCADE)

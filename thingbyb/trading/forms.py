@@ -8,7 +8,7 @@ class TradeOrderForm(forms.Form):
     #type = forms.ChoiceField(choices=ORDER_TYPES)
     ticker = forms.ChoiceField(choices=settings.TICKERS)
     side = forms.CharField(widget=forms.HiddenInput())
-    price = forms.IntegerField()
-    amount = forms.IntegerField()
+    price = forms.DecimalField()
+    amount = forms.DecimalField()
 
 

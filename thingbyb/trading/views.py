@@ -7,11 +7,14 @@ from django.http import (
 from core.decorators import ajax_login_required
 from core.grid_query_form import DBGridQueryForm, db_grid_query
 from utils.redis import redis_get, redis_rpush
+from utils.currency import Currency
 from html import escape as html_encode
 from .models import TradeOrder, CurrencyHold
 from .forms import TradeOrderForm
-from django.utils import timezone
+from datetime import datetime
 from django.core import serializers
+from django.db.models import F, FloatField, ExpressionWrapper
+from django.forms.models import model_to_dict
 import time
 
 def index(request):
@@ -32,12 +35,13 @@ def create_trade_order(request):
             status=500)
     
     data      = form.cleaned_data
+    #ask_price = Currency.decimal_to_currency(data['price'])
     ask_price = data['price']
     side      = data['side']
     ticker    = data['ticker']
 
-    # TODO this will be _v2 and in bigint format
     current_price = float(redis_get(ticker + '-price').replace(':',''))
+    #current_price = Currency.decimal_to_currency(current_price)
     if current_price is None:
         return JsonResponse({'error': 'Current price unknown.'}, status=500)
 
@@ -47,10 +51,10 @@ def create_trade_order(request):
     
     wallet = request.user.currency
     amount = data['amount']
-    total_cost = amount * ask_price
+    total_cost = Currency.multiply(amount, ask_price)
     
     order = create_order(
-        request.user, 'O', ticker, side, 'L', amount, ask_price, tz_now)
+        request.user, 'O', ticker, side, 'L', amount, ask_price)
     if order is None:
         return JsonResponse(
             {'error': 'Error creating order record'}, 
@@ -62,14 +66,18 @@ def create_trade_order(request):
         ch_amount = total_cost
     elif side == 'S':
         ch_ticker = ticker.lower()
-        ch_amount = amount
+        ch_amount = Currency.decimal_to_currency(amount)
 
     try:
-        hold = CurrencyHold(request.user, order, ch_ticker, ch_amount)
+        hold = CurrencyHold(
+            user=request.user, 
+            order=order, 
+            ticker=ch_ticker, 
+            amount=ch_amount)
         hold.save()
     except Exception as e:
         #TODO logging
-        print(f"Could not create currency hold, lucky!")
+        print(f"Could not create currency hold, lucky! {e}")
         return JsonResponse(
             {'id': order.id,
              'extra':'Could not create currency hold, lucky!'},
@@ -96,43 +104,49 @@ def create_trade_order(request):
 def fill_order_right_away(user, data):
     
     wallet    = user.currency
+    #ask_price = Currency.decimal_to_currency(data['price'])
     ask_price = data['price']
     side      = data['side']
     ticker    = data['ticker']
     amount    = data['amount']
     
     auto_filled = False
-    total_cost = amount * ask_price
+    total_cost = Currency.multiply(amount, ask_price)
     if side == 'B': # Buy
         if total_cost >= wallet.bybs:
             return JsonResponse(
                 {'error': 'Not enough fake money.'},
-                status=403)
+                status=200)
         auto_filled = adjust_wallet(wallet, -total_cost, ticker, amount)
     elif side == 'S': # Sell
         if amount > getattr(wallet, ticker.lower()):
             return JsonResponse(
                 {'error': f"Not enough {ticker}."},
-                status=403)
+                status=200)
         auto_filled = adjust_wallet(wallet, total_cost, ticker, -amount)
 
     if not auto_filled:
         return JsonResponse(
             {'error':"Could not adjust wallet amounts"},
-            status=500)
+            status=200)
 
-    tz_now = timezone.now()
+    dt_now = datetime.now()
     order = create_order(
-        user, 'F', ticker, side, 'L', amount, ask_price, tz_now)
+        user, 'F', ticker, side, 'L', amount, ask_price, dt_now)
     if order is None:
         return JsonResponse(
             {'error': 'Error creating auto fill record'}, 
-            status=500)
+            status=200)
 
-    fmt_now = tz_now.strftime("%H:%M:%S")
+    fmt_now = dt_now.strftime("%H:%M:%S")
     fill_data = [
-        str(int(time.time())), str(order.id), str(user.id),
-        side, str(amount), str(ask_price), fmt_now
+        str(int(time.time())), 
+        str(order.id), 
+        str(user.id),
+        side, 
+        str(amount), 
+        str(ask_price), 
+        fmt_now
     ]
     if redis_rpush(ticker + '-fills', '|'.join(fill_data)):
         # TODO logging
@@ -196,12 +210,25 @@ def get_trade_orders(request):
     return JsonResponse(
         db_grid_query(
             request.user.trade_orders, 
-            form), 
+            form,
+            # annotations
+            {
+                'total':ExpressionWrapper(
+                    (F('amount') * (F('price') * Currency.SCALE_FACTOR)) / Currency.SCALE_FACTOR,
+                    output_field=FloatField()
+                ),
+            }
+        ),
         status=200)
 
 
 @ajax_login_required
 def get_trade_wallet(request):
+    # Just in case, but this is currently done in the front end.
+    #wallet = request.user.currency
+    #wallet = model_to_dict(request.user.currency, exclude=['id'])
+    #wallet = UserCurrency(**wallet)
+    #wallet.bybs = Currency.currency_to_decimal(wallet.bybs)
     try:
         return JsonResponse(
             serializers.serialize(
