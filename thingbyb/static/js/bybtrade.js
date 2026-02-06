@@ -166,8 +166,8 @@ export function ByBTrade(options) {
 	<div id="_byb_sell" class="_byb_cart_tab _byb_cart_tab_sell">Sell</div>
 </div>
 `));
-			let amountInput = $('<input id="_byb_cart_amount" value="0.0" class="order_input">');
-			let priceInput = $('<div style="align-items:center;display:inline-flex;"><input id="_byb_cart_price" value="0.0" class="order_input"><span style="color:#ccc;padding:0px 5px;height:19px;"><small> BYBS</small></span></div>');
+			let amountInput = $('<input id="_byb_cart_amount" value="0.0" class="order_input" autocomplete="off">');
+			let priceInput = $('<div style="align-items:center;display:inline-flex;"><input id="_byb_cart_price" value="0.0" class="order_input" autocomplete="off"><span style="color:#ccc;padding:0px 5px;height:19px;"><small> BYBS</small></span></div>');
 			let typeSelect = $('<select><option name="type_limit">Limit</option></select>');
 			let marketSelect = $('<select id="_byb_cart_market_select"></select>');
 			marketSelect.append('<option value="0">-- Select Market --</option>');
@@ -186,7 +186,7 @@ export function ByBTrade(options) {
 						$('<span>Amount </span>'), amountInput
 					),
 					$('<input type="hidden" value="" id="_byb_order_side">'),
-					$(`<input type="hidden" name="csrf_token" id="csrf_token" value="${_options.csrfToken}">`),
+					//$(`<input type="hidden" name="csrfmiddlewaretoken" id="csrf_token" value="${_options.csrfToken}">`),
 					//amount_number_modifier.container(),
 					$('<div class="_byb_order_button_bar"><div id="_byb_cart_order_status" class="_byb_cart_order_status"></div><div id="_byb_cart_order_button" class="_byb_cart_order_button">Place Order</div></div>')
 				)
@@ -261,11 +261,12 @@ export function ByBTrade(options) {
 					$(this).html("Place Order");
 				}, 1000);
 				
-				fetchData("http://192.168.11.103:80/api/index.php?r=trade_order_create", {
+				fetchData("trading/create_trade_order", {
 					ticker:ticker,
 					amount:amount,
 					price:price,
-					side:side
+					side:side,
+					csrfmiddlewaretoken:_options.csrfToken
 				})
 				.fail(function(jqXHR, textStatus, errorThrown) {
 					pageError("Error placing order, see F12");

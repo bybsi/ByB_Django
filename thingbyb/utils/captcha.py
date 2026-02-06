@@ -3,10 +3,12 @@ import shutil
 import base64
 from django.conf import settings
 from django.core.cache import cache
+from utils.redis import redis_client
 
-def get_captcha():
+@redis_client
+def get_captcha(client = None):
     try:
-        client = cache.client.get_client()
+        #client = cache.client.get_client()
         captcha = client.lpop("captcha-queue").decode('utf-8') + '.png'
         captcha_filepath = os.path.join(settings.CAPTCHA_PENDING_DIR, captcha)
         shutil.move(

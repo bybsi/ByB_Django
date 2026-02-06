@@ -308,7 +308,7 @@ function BybGrid(options) {
 						searchBar += `<option value="${val}">${lbl}</option>`;
 					searchBar += '</select>';
 				} else {
-					searchBar += `<input type="text" class="${_clGSearchField}" name="${column.key}" style="width:${parseInt(column.width) - 20}px">`;
+					searchBar += `<input type="text" class="${_clGSearchField}" name="${column.key}" style="width:${parseInt(column.width) - 20}px" autocomplete="off">`;
 				}
 				searchBar += `<div class="${_clGSearchOverlay}">${searchVal}</div>`;
 				searchBar += '</div>';
@@ -370,7 +370,7 @@ function BybGrid(options) {
 						searchBar += `<option value="${val}">${lbl}</option>`;
 					searchBar += '</select>';
 				} else {
-					searchBar += `<input type="text" class="${_clGSearchField}" name="${column.key}" style="width:${cWidth}">`;
+					searchBar += `<input type="text" class="${_clGSearchField}" name="${column.key}" style="width:${cWidth}" autocomplete="off">`;
 				}
 				searchBar += `<div class="${_clGSearchOverlay}">${searchVal}</div>`;
 				searchBar += '</th>';

@@ -13,6 +13,7 @@ from .forms import RegisterForm, SettingsForm
 from utils.captcha import get_captcha, validate_captcha
 from . import module as user_module
 from html import escape as html_encode
+from core.decorators import ajax_login_required
 
 def login(request):
     if request.method != 'POST':
@@ -104,6 +105,7 @@ def register(request):
         })
 
 
+@ajax_login_required
 def settings(request):
     if request.method == 'POST':
         form = SettingsForm(request.POST)

@@ -13,7 +13,7 @@ class TradeOrder(TimeStampedModel):
     type = models.CharField(max_length=1)
     amount = models.BigIntegerField()
     price = models.BigIntegerField()
-    filled_at = models.DateTimeField(verbose_name='Filled At', auto_now=True, null=True, blank=True)
+    filled_at = models.DateTimeField(verbose_name='Filled At', null=True, blank=True)
 
     class Meta:
         ordering = ['-created_at']
