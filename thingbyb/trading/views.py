@@ -9,12 +9,15 @@ from core.grid_query_form import DBGridQueryForm, db_grid_query
 from utils.redis import redis_get, redis_rpush
 from utils.currency import Currency
 from html import escape as html_encode
+from users.models import UserCurrency
 from .models import TradeOrder, CurrencyHold
 from .forms import TradeOrderForm
+from . import settings
 from datetime import datetime
 from django.core import serializers
 from django.db.models import F, FloatField, ExpressionWrapper
 from django.forms.models import model_to_dict
+from django.core.cache import cache
 import time
 
 def index(request):
@@ -195,11 +198,6 @@ def cancel_trade_order(request):
 
 @ajax_login_required
 def get_trade_orders(request):
-    if not request.user.is_authenticated:
-        return JsonResponse(
-            {'error': 'Unauthorized.'},
-            status=403)
-
 
     form = DBGridQueryForm(request.GET)
     if not form.is_valid():
@@ -207,6 +205,7 @@ def get_trade_orders(request):
             {'error': 'Invalid API call.'},
             status=500)
 
+    
     return JsonResponse(
         db_grid_query(
             request.user.trade_orders, 
@@ -241,6 +240,43 @@ def get_trade_wallet(request):
         print(f"Could not load user wallet {e}")
     return JsonResponse({'error':'Invalid API call (wallet)'}, status=500)
 
+
+def leaderboard(request):
+    '''
+    Fetches the top 50 users (by trade value) to be displayed
+    in a grid. The results are cached for 5 minutes before
+    the next request generates the list again.
+    :param request:The HTTP GET request
+    :returns:A JSON response containing the top 50 users
+    display name and value.
+    '''
+    cache_key = 'trading_leaderboard'
+    timeout = 300
+    data = cache.get(cache_key)
+    if data is not None:
+        return JsonResponse(data, status=200)
+
+    annotations = {
+        'value':0,
+        'display_name':F('user__display_name')
+    }
+    for ticker in settings.TICKERS:
+        current_price = float(redis_get(ticker[0] + '-price').replace(':',''))
+        annotations['value'] += (F(ticker[0].lower()) * current_price)
+    annotations['value'] += F('bybs') / Currency.SCALE_FACTOR
+   
+    data = {
+        'numRows':50,
+        'rows':list(
+            UserCurrency.objects.select_related('user').annotate(
+                **annotations
+            ).values('display_name', 'value')[:50]
+        )
+    }
+
+    cache.set(cache_key, data, timeout)
+    
+    return JsonResponse(data, status=200)
 
 
 

@@ -341,14 +341,14 @@ export function ByBTrade(options) {
 		createLeaderBoard() {
 			_leaderBoard = $("#"+_options.leaderboardId);
 			var columns = [
-				{key:'display_name',label:'User',width:'125px'},
-				{key:'value',label:'Value (BYBS)',width:'125px',searchType:'>',formatter:this.moneyFormatter},
+				{key:'display_name',label:'User',width:'125px',searchable:false, sortable:false},
+				{key:'value',label:'Value (BYBS)',width:'125px',searchType:'>',formatter:this.moneyFormatter,searchable:false,sortable:false},
 			];
 
 			_leaderBoardGrid = new BybGrid({
 				containerId:_options.leaderboardId,
 				loadingClass:'_byb_dialog_loading',
-				dataUrl:'http://192.168.11.103:80/api/index.php?r=data_trade_leaderboard',
+				dataUrl:'trading/leaderboard',
 				columns:columns,
 				autoColumnWidth:true,
 				sortOrder:'desc',
@@ -363,7 +363,7 @@ export function ByBTrade(options) {
 			});
 			_leaderBoardGrid.init();
 			_leaderBoardGrid.load();
-			_leaderBoard.prepend($('<div class="_byb_leaderboard_header"><span>Leaderboard</span></div>'));
+			_leaderBoard.prepend($('<div class="_byb_leaderboard_header"><span>Top 50 <small>(5m update)</small></span></div>'));
 		},
 
 		reloadCart() {
