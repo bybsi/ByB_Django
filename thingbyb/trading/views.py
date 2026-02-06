@@ -11,6 +11,7 @@ from html import escape as html_encode
 from .models import TradeOrder, CurrencyHold
 from .forms import TradeOrderForm
 from django.utils import timezone
+from django.core import serializers
 import time
 
 def index(request):
@@ -130,12 +131,13 @@ def fill_order_right_away(user, data):
 
     fmt_now = tz_now.strftime("%H:%M:%S")
     fill_data = [
-        int(time.time()), order.id, user.id,
-        side, amount, ask_price, fmt_now
+        str(int(time.time())), str(order.id), str(user.id),
+        side, str(amount), str(ask_price), fmt_now
     ]
     if redis_rpush(ticker + '-fills', '|'.join(fill_data)):
         # TODO logging
         print(f"Could not push auto fill to redis")
+
     return JsonResponse(
         {ticker: [f"0|{side}|{amount}|{ask_price}|{fmt_now}"]},
         status=200)
@@ -196,5 +198,22 @@ def get_trade_orders(request):
             request.user.trade_orders, 
             form), 
         status=200)
-   
+
+
+@ajax_login_required
+def get_trade_wallet(request):
+    try:
+        return JsonResponse(
+            serializers.serialize(
+                "python", 
+                [request.user.currency]
+                )[0]['fields'],
+            status=200)
+    except Exception as e:
+        #TODO logging
+        print(f"Could not load user wallet {e}")
+    return JsonResponse({'error':'Invalid API call (wallet)'}, status=500)
+
+
+
 

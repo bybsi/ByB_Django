@@ -153,7 +153,7 @@ export function ByBTrade(options) {
 			_cart = $("#"+_options.cartId);
 			_wallet = new ByBTradeWallet({
 				containerId:'_byb_trade_wallet',
-				dataURL:'http://192.168.11.103:80/api/index.php?r=trade_wallet',
+				dataURL:'trading/trade_wallet',
 			});
 			_wallet.init();
 			_wallet.load();
