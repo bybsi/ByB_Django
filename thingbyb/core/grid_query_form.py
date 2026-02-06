@@ -79,7 +79,7 @@ def db_grid_query_filter(column_names, values):
     return filters
 
 
-def db_grid_query(model_manager, form):
+def db_grid_query(model_manager, form, annotations={}):
     '''
     Queries the databases for paginated data for grids
     .
@@ -94,11 +94,11 @@ def db_grid_query(model_manager, form):
     else:
         order = data['sortkey']
 
-    results = model_manager.filter(
-            **db_grid_query_filter(data['searchkey'], data['searchval'])
-        ).order_by(order)
-    
-    paginator = Paginator(results, data['limit'])
+    query_set = model_manager.filter(
+        **db_grid_query_filter(data['searchkey'], data['searchval'])
+    ).annotate(**annotations).order_by(order)
+
+    paginator = Paginator(query_set, data['limit'])
     try:
         page_obj = paginator.page(data['page'])
     except EmptyPage:
