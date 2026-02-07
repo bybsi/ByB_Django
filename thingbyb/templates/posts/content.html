@@ -9,7 +9,7 @@
 	<div class="post_column">
 	{% for post in col %}
 		<div class="post_container">
-			<div class="post_header">{{post.title}}</div>
+			<div class="post_header">{{post.title|add_static_sources|safe}}</div>
 			<div class="post_content">{{post.content|add_static_sources|safe}}</div>
 			<div class="post_footer">{{post.created_by}} | {{post.created_at}}</div>
 		</div>
