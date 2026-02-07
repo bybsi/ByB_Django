@@ -86,7 +86,7 @@ export function ByBTrade(options) {
 					title:market.label
 				});
 				market.book = new ByBOrderBook({
-					dataURL:`http://192.168.11.103:80/api/index.php?r=trade_order_book&ticker=${market.key.toUpperCase()}`,
+					dataURL:`trading/order_book?ticker=${market.key.toUpperCase()}`,
 					containerId:bookId
 				});
 				market.fill = new ByBFillPanel({

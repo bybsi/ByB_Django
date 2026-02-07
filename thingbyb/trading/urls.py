@@ -8,6 +8,7 @@ urlpatterns = [
     path('cancel_trade_order', views.cancel_trade_order, name='Cancel Trade Order'),
     path('trade_wallet', views.get_trade_wallet, name='Trade Wallet'),
     path('leaderboard', views.leaderboard, name='Trading Leaderboard'),
+    path('order_book', views.order_book, name='Trade Order Book'),
     #path('leaderboard', views.get_data, name='Leaderboard'),
 ]
 

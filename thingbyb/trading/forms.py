@@ -16,3 +16,7 @@ class CancelOrderForm(forms.Form):
     order_id = forms.IntegerField(min_value=1)
 
 
+class OrderBookForm(forms.Form):
+    ticker = forms.CharField(max_length=8, min_length=1)
+    current_price = forms.DecimalField()
+

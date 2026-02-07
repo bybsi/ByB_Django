@@ -68,7 +68,7 @@ def register(request):
             return HttpResponse(
                 "Invalid form inputs.", 
                 content_type="text/plain",
-                status=406)
+                status=400)
 
         if user_module.get_user(form.cleaned_data['username']):
             return HttpResponse(
@@ -112,7 +112,7 @@ def settings(request):
         if not form.is_valid():
             return JsonResponse(
                 {'error': 'Invalid input.'},
-                status=406)
+                status=400)
 
         user = request.user
         user.display_name = form.cleaned_data['display_name'] or user.username

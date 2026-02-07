@@ -11,11 +11,11 @@ from utils.currency import Currency
 from html import escape as html_encode
 from users.models import UserCurrency
 from .models import TradeOrder, CurrencyHold
-from .forms import TradeOrderForm, CancelOrderForm
+from .forms import TradeOrderForm, CancelOrderForm, OrderBookForm
 from . import settings
 from datetime import datetime
 from django.core import serializers
-from django.db.models import F, FloatField, ExpressionWrapper
+from django.db.models import F, FloatField, ExpressionWrapper, Sum
 from django.forms.models import model_to_dict
 from django.core.cache import cache
 import time
@@ -254,7 +254,7 @@ def get_trade_orders(request):
     if not form.is_valid():
         return JsonResponse(
             {'error': 'Invalid API call.'},
-            status=500)
+            status=400)
 
     
     return JsonResponse(
@@ -328,6 +328,56 @@ def leaderboard(request):
     cache.set(cache_key, data, timeout)
     
     return JsonResponse(data, status=200)
+
+
+def order_book(request):
+
+    if request.method != 'GET':
+        return JsonResponse(
+            {'error':'Couldn''t load order book.'},
+            status=400)
+
+    form = OrderBookForm(request.GET)
+    if not form.is_valid():
+        return JsonResponse(
+            {'error':'Invalid request params.'},
+            status=400)
+    
+    results = {'buy':[], 'sell':[]}
+
+    limit = 25
+    data = form.cleaned_data
+    
+    orders = TradeOrder.objects.filter(
+            ticker=data['ticker'].upper(),
+            side='B',
+            status='O',
+            price__lte=data['current_price']
+        ).values('price').annotate(
+            amount=Sum('amount')
+        ).order_by('price')[:limit]
+    for row in orders:
+        results['buy'].append(row)
+    
+    orders = TradeOrder.objects.filter(
+            ticker=data['ticker'].upper(),
+            side='S',
+            status='O',
+            price__gte=data['current_price']
+        ).values('price').annotate(
+            amount=Sum('amount')
+        ).order_by('price')[:limit]
+    for row in orders:
+        results['sell'].append(row)
+
+    return JsonResponse(results, status=200)
+
+
+
+
+
+
+
 
 
 

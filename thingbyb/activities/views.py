@@ -20,7 +20,7 @@ def get_data(request):
     if not form.is_valid():
         return JsonResponse(
             {'error': 'Invalid API call.'},
-            status=500)
+            status=400)
 
     return JsonResponse(db_grid_query(Activity.objects, form), status=200)
 
