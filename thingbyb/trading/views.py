@@ -29,7 +29,7 @@ def index(request):
 
 
 @ajax_login_required
-def create_trade_order(request):
+def place_trade_order(request):
 
     form = TradeOrderForm(request.POST)
     if not form.is_valid():

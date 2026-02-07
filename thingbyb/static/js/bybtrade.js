@@ -261,7 +261,7 @@ export function ByBTrade(options) {
 					$(this).html("Place Order");
 				}, 1000);
 				
-				fetchData("trading/create_trade_order", {
+				fetchData("trading/place_trade_order", {
 					ticker:ticker,
 					amount:amount,
 					price:price,
