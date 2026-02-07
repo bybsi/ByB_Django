@@ -288,6 +288,8 @@ export function ByBTrade(options) {
 							pageError(data.error);
 							$("#_byb_cart_order_status").html("Error filling order.");
 							return;
+						} else {
+							$("#_byb_cart_order_status").html('');
 						}
 						pageOkay("Order filled.");
 						_wallet.load();
