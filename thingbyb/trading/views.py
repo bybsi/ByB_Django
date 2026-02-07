@@ -38,31 +38,38 @@ def place_trade_order(request):
             status=500)
     
     data      = form.cleaned_data
-    #ask_price = Currency.decimal_to_currency(data['price'])
     ask_price = data['price']
+    amount    = data['amount']
     side      = data['side']
     ticker    = data['ticker']
 
     current_price = float(redis_get(ticker + '-price').replace(':',''))
-    #current_price = Currency.decimal_to_currency(current_price)
     if current_price is None:
         return JsonResponse({'error': 'Current price unknown.'}, status=500)
 
-    if ((side == 'B' and ask_price >= current_price) or
-        (side == 'S' and ask_price <= current_price)):
-        return fill_order_right_away(request.user, data)
-    
     wallet = request.user.currency
-    amount = data['amount']
     total_cost = Currency.multiply(amount, ask_price)
-    
+    if side == 'B': # Buy
+        if total_cost >= wallet.bybs:
+            return JsonResponse(
+                {'error': 'Not enough fake money.'},
+                status=200)
+        if ask_price >= current_price:
+            return fill_order_right_away(request.user, data, total_cost)
+    elif side == 'S': # Sell
+        if amount > getattr(wallet, ticker.lower()):
+            return JsonResponse(
+                {'error': f"Not enough {ticker}."},
+                status=200)
+        if ask_price <= current_price:
+            return fill_order_right_away(request.user, data, total_cost)
+
     order = create_order(
         request.user, 'O', ticker, side, 'L', amount, ask_price)
     if order is None:
         return JsonResponse(
             {'error': 'Error creating order record'}, 
             status=500)
-
     
     if side == 'B':
         ch_ticker = 'bybs'
@@ -104,28 +111,18 @@ def place_trade_order(request):
         status=200)
 
 
-def fill_order_right_away(user, data):
+def fill_order_right_away(user, data, total_cost):
     
     wallet    = user.currency
-    #ask_price = Currency.decimal_to_currency(data['price'])
     ask_price = data['price']
     side      = data['side']
     ticker    = data['ticker']
     amount    = data['amount']
     
     auto_filled = False
-    total_cost = Currency.multiply(amount, ask_price)
     if side == 'B': # Buy
-        if total_cost >= wallet.bybs:
-            return JsonResponse(
-                {'error': 'Not enough fake money.'},
-                status=200)
         auto_filled = adjust_wallet(wallet, -total_cost, ticker, amount)
     elif side == 'S': # Sell
-        if amount > getattr(wallet, ticker.lower()):
-            return JsonResponse(
-                {'error': f"Not enough {ticker}."},
-                status=200)
         auto_filled = adjust_wallet(wallet, total_cost, ticker, -amount)
 
     if not auto_filled:
@@ -151,7 +148,7 @@ def fill_order_right_away(user, data):
         str(ask_price), 
         fmt_now
     ]
-    if redis_rpush(ticker + '-fills', '|'.join(fill_data)):
+    if not redis_rpush(ticker + '-fills', '|'.join(fill_data)):
         # TODO logging
         print(f"Could not push auto fill to redis")
 
