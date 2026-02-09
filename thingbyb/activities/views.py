@@ -16,7 +16,7 @@ def index(request):
     
 
 def get_data(request):
-    form = DBQueryForm(request.GET)
+    form = DBGridQueryForm(request.GET)
     if not form.is_valid():
         return JsonResponse(
             {'error': 'Invalid API call.'},
