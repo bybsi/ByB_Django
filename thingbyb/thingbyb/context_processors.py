@@ -5,7 +5,7 @@ def global_vars(request):
     return {
         'version_str':int(time.time()),
         'timestamp':int(time.time()),
-        'issues':'none',
+        'issues':'',
         'css_files': settings.GLOBAL_FILES['css_files'],
         'js_files': settings.GLOBAL_FILES['js_files'],
         'icons': settings.GLOBAL_FILES['icons']
