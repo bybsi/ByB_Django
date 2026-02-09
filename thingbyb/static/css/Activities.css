@@ -1,11 +1,26 @@
-.rl {border-bottom:1px solid #eee; padding:3px 0px 3px 5px; color:#fff; width:100px;}
+.rl {
+        padding:3px 0px 3px 10px;
+        color:#fff;
+        width:100px;
+        border-radius:10px;
+}
 #running_legend {
-	display:flex;
-	font-size: 11px;
-	flex-direction:row;
-	width:fit-content;
+        display:flex;
+        font-size: 11px;
+        flex-direction:row;
+        width:fit-content;
+        gap:5px;
 }
 .rl_1m { background-color:#008900;}
 .rl_5k { background-color:#006e9d;}
 .rl_10k { background-color:#c96400;}
-.rl_tag { width:100%; border:1px solid black; padding:3px; display:inline-block; box-sizing: border-box; color:#fff;}
+.rl_tag {
+        width: 100%;
+        padding: 3px;
+        display: inline-block;
+        box-sizing: border-box;
+        color: #fff;
+        border-radius: 10px;
+        padding-right: 8px;
+}
+
