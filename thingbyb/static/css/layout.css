@@ -257,7 +257,7 @@
 	font-family:'Open Sans',Helvetica, Sans-serif;
 }
 .ui-widget.ui-widget-content {
-	border-radius:5px;
+	border-radius:10px;
 }
 .ui-widget-header {
 	background:unset;
@@ -266,8 +266,7 @@
 	padding:4px 0 0 4px;
 	color:white;
 	border:0;
-	border-top-right-radius:3px;
-	border-top-left-radius:3px;
+	border-radius:10px;
 }
 .ui-widget button {
 	font-family:'Open Sans',Helvetica, Sans-serif;
