@@ -31,7 +31,14 @@ CAPTCHA_PENDING_DIR = CAPTCHA_DIR + '/pending'
 # SECURITY WARNING: keep the secret key used in production secret!
 # TODO keep this secret like I do for the database and googleauth:
 #    secret_db_pw = DBCrypt().decrypt('LZyBY1sWkFGnqwJjS0C/sw==')
-SECRET_KEY = 'django-insecure-fq!z&2wlzv))9$a#m(xefj%@kv+p86b!^33s&k046cy54b)2dw'
+SECRET_KEY = DBCrypt(
+    keyfile=os.path.join('.keys', 'djsec.key')
+).decrypt(
+    "dO+efynMSoLL3y9jPrhhmXaTilC7nn+S2sCL"
+    "TGES6fYdaexhUeqHtTK3X/STAKI3oWk7oxC5"
+    "rZPW68CyuoP8K1eRr9JJTESzFwhIzJiN/kU="
+)
+#SECRET_KEY = 'django-insecure-fq!z&2wlzv))9$a#m(xefj%@kv+p86b!^33s&k046cy54b)8cx'
 
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
