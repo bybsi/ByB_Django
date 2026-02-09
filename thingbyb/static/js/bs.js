@@ -171,10 +171,11 @@ $(function(){
 					_trade.destroy();
 					_trade = null;
 				}
+				let projectUrl = project;
 				if (project == 'running')
-					project = 'activities';
-				$("#_byb_content_main").load(`/` + project, function() {
-					console.log('Project ' + project + ' loaded');
+					projectUrl = 'activities';
+				$("#_byb_content_main").load(`/` + projectUrl, function() {
+					console.log('Project ' + projectUrl + ' loaded');
 				});
 				$('#_byb_'+whereAmI).removeClass('nav_item_icon_on');
 				$(this).addClass('nav_item_icon_on');
