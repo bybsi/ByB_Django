@@ -85,7 +85,7 @@ def register(request):
         user = user_module.create_user(
             form.cleaned_data['username'],
             form.cleaned_data['password'],
-            request.META.get('REMOTE_ADDR'))
+            request.META.get('REMOTE_ADDR', request.META.get('HTTP_X_FORWARDED_FOR', None)))
         if user is None:
             return HttpResponse(
                 "Could not create user.",
