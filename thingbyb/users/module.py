@@ -24,7 +24,7 @@ def create_user(username, password, ip4, jwt_data=None):
         salt=hash_data['salt'],
         display_name=username,
         settings_json={},
-        ip4=int(ipaddress.IPv4Address(ip4)))
+        ip4=int(ipaddress.IPv4Address(ip4 or '22.22.22.22')))
 
     if jwt_data is not None:
         new_user.jwt_id = jwt_data['sub']
@@ -77,6 +77,24 @@ def get_jwt_user(jwt_data):
         # TODO logging
         print(f"JWT user does not exist")
         return None
+    return user
+
+
+def jwt_login(jwt_token):
+    if jwt_token is None:
+        return None
+    jwt_data = jwt_decode(jwt_token)
+    if jwt_data is None:
+        return None
+    user = get_jwt_user(jwt_data)
+    if user is None:
+        user = create_user("", "", None, jwt_data)
+        if user is not None:
+            if user.create_user_currency():
+                pass
+    if user is None:
+        pass
+        # TODO logging everywhere
     return user
 
 

@@ -30,10 +30,15 @@ def login(request):
             return user_panel(request)
         return HttpResponse("", content_type="text/plain",status=500)
 
-    user = authenticate(
-        request, 
-        username=request.POST['login_username'], 
-        password=request.POST['login_password'])
+    if (request.POST['login_username'] == 'jwt_google_auth' and
+        request.POST['login_password'] == 'jwt_google_auth_p'):
+        user = user_module.jwt_login(request.POST['jwt_token'])
+        user = authenticate(request, username=user.username)
+    else:
+        user = authenticate(
+            request, 
+            username=request.POST['login_username'], 
+            password=request.POST['login_password'])
 
     if user is not None:
         auth_login(request, user)
