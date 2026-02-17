@@ -364,7 +364,7 @@
 	display:none;
 }
 
-@media screen and (max-width: 690px) {
+@media screen and (max-width: 780px) {
 	#signin_button {
 		display: block;
 	}
