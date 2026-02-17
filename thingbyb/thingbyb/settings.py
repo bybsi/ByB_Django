@@ -40,6 +40,9 @@ SECRET_KEY = DBCrypt(
 )
 #SECRET_KEY = 'django-insecure-fq!z&2wlzv))9$a#m(xefj%@kv+p86b!^33s&k046cy54b)8cx'
 
+SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+SECURE_SSL_REDIRECT = True
+
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
