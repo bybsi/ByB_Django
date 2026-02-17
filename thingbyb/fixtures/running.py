@@ -18,6 +18,7 @@ try:
         for line in fh:
             line = line.replace('"','')
             (t, timestamp, _, title, distance, _, time, heart_rate, _, _, _, avg_pace, best_pace, ascent, descent, _stl, _,_,_,_,_,_,_,moving_time, _rest) = line.rstrip().split(',', 24)
+            count -= 1
             if 'walking' in t.lower():
                 continue
             output += "('{}','{}','{}','{}','{}','{}','{}','{}','{}','{}')".format(
@@ -32,7 +33,6 @@ try:
                     int(ascent) if ascent[0].isdigit() else 0,
                     int(descent) if descent[0].isdigit() else 0
                 )
-            count -= 1
             if count == 0:
                 output += ";\n"
                 break
